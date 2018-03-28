@@ -1,0 +1,284 @@
+Curso DEvmedia
+
+Minha primeira página Single Page Application com Angular
+
+Um página que recarrega apenas um conteudo.
+
+Ela carrega só uma parte do conteudo, no caso ela não precisa carregar a pagina inteira para mostrar as telas delas (conteudo dinamico)
+
+Tecnologias
+
+Typescript ( que ja vem no angular)
+Angular 5
+Node.Js
+Angular CLI
+HTML e CSS (para revisar nossas views)
+Javascript
+
+Angular Js diferente de angular
+
+O PROJETO
+
+Neste curso conheceremos aspectos fundamentais da programação com Angular, um dos frameworks JavaScript mais utilizados atualmente para a criação de aplicações cliente, que recebem/enviam dados para um servidor remoto, tendo seu próprio código completamente separado da implementação deste serviço.
+
+Como cenário para a criação desta aplicação considere as necessidades do setor administrativo de uma clínica médica, que necessita visualizar rapidamente um resumo das consultas marcadas, assim como o seu faturamento em um determinado período.
+
+Um Dashboard é o tipo de aplicação ideal neste caso, pois permite o agrupamento dos dados, permitindo serem facilmente visualizados e, portanto, será este o tipo de aplicação que criaremos.
+
+Esta aplicação terá o comportamento de uma SPA que significa Single Page Application. Se você já utilizou o Facebook ou Gmail já sabe como funciona uma SPA, pois são aplicações cuja funcionalidade está concentrada em uma única página. Ao invés de carregar toda a página ou redirecionar o usuário para uma nova, apenas o conteúdo principal é atualizado dinamicamente, mantendo toda a estrutura ao seu redor estática.
+
+Em nossa aplicação oferecemos um menu de navegação lateral, a partir do qual o usuário poderá escolher o conteúdo a ser apresentado na área principal da página.
+
+Ao longo deste curso veremos que o Angular fornece toda a infraestrutura necessária para navegação através de rotas, manipulação do DOM, recebimento e processamento de documentos em formato JSON através da web, sendo uma opção perfeitamente adequada para este tipo de cenário.
+
+Conforme mencionamos anteriormente, é comum que uma aplicação cliente necessite receber os dados a serem apresentados de um serviço remoto. Neste curso usaremos uma Web API que estará acessível a todos através da internet.
+Por uma questão de praticidade esta Web API fornece apenas dados estáticos, ou seja, que não mudam entre as requisições e não requerem, portanto, que parâmetros sejam enviados. Ainda assim esta Web API é suficiente para entendermos como é criada uma aplicação cliente com o Angular.
+
+CRIANDO O PROJETO
+
+Um projeto Angular possui diversos arquivos, em grande parte destinados a criação da infraestrutura necessária para que a aplicação funcione. Para que não seja necessário criá-los manualmente utilizamos uma ferramenta chamada Angular CLI.
+
+Angular CLI é uma ferramenta de linha de comando que procura automatizar diversas tarefas envolvidas na programação de uma aplicação Angular, dentre elas a criação do projeto.
+
+
+
+Uma das formas de instalarmos esta ferramenta é através do gerenciador de pacotes do Node, o NPM. Para tal devemos ter o Node instalado em nosso ambiente de desenvolvimento. Além disso, uma vez que a Angular CLI é escrita em JavaScript será o Node o responsável por permitir que a utilizemos partir de um terminal, como um programa escrito em código nativo.
+
+Para verificar se possuímos uma versão do Node em funcionamento podemos executar o comando node -v no terminal do sistema operacional, como mostra a Figura 1.
+
+node -v
+
+E agora, como instalar a Angular CLI?
+
+Ainda no terminal, e com acesso à internet, execute o seguinte comando como administrador:
+
+npm i @angular/cli -g
+
+Criando o primeiro projeto
+
+Para criar um novo projeto utilizamos o seguinte comando:
+
+ng new treinamento-angular
+
+Entendendo a estrutura do projeto
+
+Conheceremos agora um pouco da estrutura de um projeto Angular e, em especial, o diretório src, onde será colocado o código principal da aplicação.
+
+Diretório app: Aqui serão criados os componentes da aplicação. Um componente é a base para construirmos uma view, para isso utilizamos HTML, CSS e o TypeScript. Uma aplicação Angular é formada por vários componentes e cada um é responsável por exibir uma parte da aplicação.
+Diretório assets: Neste diretório podemos colocar arquivos JavaScript, CSS e imagens ou qualquer outro arquivo que será acessado publicamente.
+Diretório environments: Teremos uma aula específica para abordá-lo, mas aqui definimos variáveis e até mesmo funções a serem compartilhadas entre as classes da nossa aplicação.
+Diretório node_modules: Aqui estão todas as dependências instaladas definidas no arquivo package.json. Este diretório também faz parte do Node.
+Arquivo index.html: Este é o primeiro arquivo a ser carregado quando acessamos a aplicação através da URL http://localhost:4200. A partir dele será carregado todo o código JavaScript da aplicação e por meio dele iniciaremos o componente app.
+Arquivo main.ts: Este arquivo contém a lógica que inicia uma aplicação Angular e a partir daí, marcações no HTML como <app-root></app-root> passam a ser reconhecidas como componentes.
+Arquivo polyfills.ts: Neste arquivo são declaradas funções com o objetivo de executar o código JavaScript do projeto em diferentes navegadores, eliminando problemas de compatibilidade entre eles.
+Arquivo Styles.css: Arquivo de CSS da aplicação.
+Arquivo tsconfig.ts e tslint.ts: Estes arquivos contêm configurações básicas a compilação do código TypeScript. Para a maior parte dos projetos as configurações iniciais serão suficientes.
+Arquivo package.json: Este arquivo é gerado pelo Node, contendo informações do nosso projeto como o nome, versão e licença. Aqui também são descritas as dependências do projeto.
+Arquivos karma.conf.js e test.ts: Estes são arquivos para automatização de testes da aplicação.
+Arquivo README.md: É um manual com um breve resumo do que podemos fazer com a nossa aplicação. Você pode editá-lo para informar como funciona a sua aplicação.
+Arquivo .gitignore: Aqui informamos para o Git, ferramenta de versionamento de código, quais arquivos e diretórios não devem ser adicionados ao repositório de versionamento.
+
+3. EXECUTANDO O PROJETO
+
+Agora que criamos o projeto podemos executá-lo para vê-lo em funcionamento no navegador. Com isso seremos apresentados a um componente e ao seu papel dentro de uma aplicação Angular, bem como ao mecanismo que permite exibir conteúdo HTML.
+
+
+Um projeto Angular recém criado contém uma página de apresentação, bem como o código necessário para executá-la. Podemos testá-lo utilizando o seguinte comando:
+
+ng serve
+
+O comando ng serve iniciará a aplicação deixando-a disponível a partir do endereço http://localhost:4200. Após executá-lo vá até o navegador e digite este endereço para ver a aplicação em execução.
+
+Como foi carregada esta página?
+
+Quando a aplicação é acessada, o arquivo index.html chama o componente <app-root></app-root>. No Angular, toda vez que precisarmos apresentar algo para o usuário, o HTML/CSS necessário para isso será escrito e adicionado a um componente. Veremos em detalhes como um componente é criado na próxima aula.
+
+Abaixo temos o código necessário para a criação da classe AppComponent, em seguida, explicamos como a partir dessa classe o Angular consegue apresentar a página que vemos quando o endereço http://localhost:4200 é acessado:
+
+
+1.import { Component } from '@angular/core';
+2.
+3.@Component({
+4.    selector: 'app-root',
+5.    templateUrl: './app.component.html',
+6.    styleUrls: ['./app.component.css']
+7.})
+8.export class AppComponent {
+10.    title = 'app';
+11.}
+
+Linha 8: export class AppComponent {
+
+Iniciaremos a leitura deste código pela linha 8porque o mais importante deste arquivo é a declaração da classe “AppComponent”. Podemos ver que tornamos esta classe pública através da instrução export, que possibilita a sua importação em um outro arquivo. Este é um recurso da linguagem TypeScript e do JavaScript, não confunda com o Angular.
+
+Linha 4: selector: 'app-root'
+
+No atributo selector informamos o nome do componente, que corresponde a tag app-root utilizada para declará-lo no HTML da aplicação.
+
+Linha 5: templateUrl: './app.component.html'
+
+No atributo templateUrl informamos onde está o HTML do componente, neste caso no mesmo diretório que o arquivo no qual o componente foi declarado, por isso o caractere “./” antes do nome do arquivo app.component.html.
+
+Linha 6: styleUrls: ['./app.component.css']
+
+No atributo StyleUrls informamos onde está o arquivo de estilo do componente, que pode ser escrito em CSS ou SASS.
+
+Linha 9: title = 'app';
+
+Podemos perceber que esta classe contém o atributo title que possui o valor app, ou seja, um valor da minha classe para exibir no HTML.
+
+
+Explorando o arquivo app.component.html
+
+Abrindo o arquivo index.html temos o seguinte código:
+
+1.<!--The content below is only a placeholder and can be replaced.-->
+2.<div style="text-align:center">
+3.    <h1>
+4.        Welcome to {{ title }}!
+5.    </h1>
+6.</div>
+
+Explicando o código
+
+Linha 4 Welcome to {{ title }}!:
+
+O Angular substituirá o valor {{title}} por app
+
+No HTML conseguimos acessar os dados da classe, onde title é um atributo da classe AppComponent e o seu valor é appcomo vimos no código anterior. Assim, fica fácil manipular o HTML utilizando o Angular.
+
+4. CRIANDO UM COMPONENTE OLÁ MUNDO
+
+Antes de criarmos componentes mais complicados, iniciaremos com um que contém apenas um parágrafo com uma cor de texto personalizada, conhecendo assim a sua estrutura.
+
+No Angular, um componente é responsável por exibir para o usuário uma interface. Portanto, toda vez que precisarmos apresentar algo para o usuário, o HTML/CSS necessário para isso será escrito e adicionado a um componente. Caso ele contenha funcionalidades, escreveremos nele o código TypeScript que as implementam.
+
+O primeiro passo para criação de um componente é adicionar a interface Component ao projeto com a seguinte instrução:
+
+1.import { Component } from '@angular/core';
+2.
+3.@Component({
+4.    selector: 'ola-mundo', // seletor <ola-mundo></ola-mundo>
+5.    templateUrl: './ola-mundo.component.html',
+       // Caminho para o arquivo HTML
+6.    styleUrls: ['./ola-mundo.component.css']
+       // Caminho para os arquivos de Estilo
+7.})
+8.export class OlaMundoComponent {
+9.
+10.constructor() { }
+11.}
+
+Linha 1: import { Component } from ‘@angular/core’;
+
+Note que precisamos importar Component do pacote @angular/core.
+
+Linha 5: templateUrl: './ola-mundo.component.html', // Caminho para o arquivo HTML
+
+O HTML será definido em um outro arquivo ola-mundo.component.html.
+
+Linha 6: styleUrls: ['./ola-mundo.component.css'] // Caminho para os arquivos de Estilo
+
+O CSS será definido no arquivo ola-mundo.component.css.
+
+Nota: Podemos incluir mais que um arquivo de estilo, pois a propriedade styleUrls recebe um array [].
+
+Linha 8: export class OlaMundoComponent {
+
+Definimos a lógica dentro da classe OlaMundoComponent que está neste arquivo ola-mundo.component.ts.
+
+Criando a estrutura de diretório do componente
+Uma aplicação Angular pode ser composta de diversos componentes. A fim de seguirmos as orientações do framework com relação a organização, utilizamos o diretório app sempre que for preciso criar um novo componente. Por conversão, dentro deste diretório criamos uma nova pasta cujo nome será o nome do componente e nela adicionamos os arquivos necessários para criá-lo, como mostra a Figura 1.
+
+Estrutura de diretório do ola-mundo.
+Figura 1. Estrutura de diretório do ola-mundo.
+Podemos agora iniciar a codificação do componente, escrevendo para isso código HTML, CSS e TypeScript.
+
+HTML e CSS do componente
+No arquivo ola-mundo.component.html incluiremos o seguinte conteúdo:
+
+<p>Olá Mundo</p>
+Com este HTML definimos a estrutura do componente e exibimos um parágrafo na página. Agora, com este CSS definimos a apresentação do componente e atribuímos uma cor ao parágrafo:
+
+p { color: aqua; }
+É importante citar que o CSS declarado para este parágrafo neste componente não afetará outros parágrafos declarados em outros componentes. Este recurso é chamado Shadow DOM e permite anexar ao componente uma parte do DOM completamente isolada do restante da página.
+
+Criando a classe do componente
+No arquivo ola-mundo.component.ts declaramos o código TypeScript para o componente. Ele será responsável, entre outras coisas, por unir a estrutura e apresentação do componente criadas anteriormente.
+
+Para isso será necessário criar uma classe como visto no código abaixo:
+
+1.import {Component} from ‘@angular/core’;
+2.
+3.@Component({
+4.    selector: ‘ola-mundo’,
+5.    templateUrl: ‘./ola-mundo.component.html’,
+6.    styleUrls: [‘./ola-mundo.component.css’]
+7.})
+8.export class OlaMundoComponent {}
+Parte deste código foi visto na aula anterior, incluindo a explicação sobre selector, templateUrl e styleUrls. Portanto, abaixo falaremos apenas da criação do componente.
+
+Explicando o código
+Linha 1: import {Component} from ‘@angular/core’;
+
+Nesta linha importamos o decorator Component do pacote @angular/core. Nele incluímos metadados sobre a classe OlaMundoComponent, que incluem a localização dos arquivos utilizados na sua construção.
+
+Linha 8: export class OlaMundoComponent
+
+Nesta linha declaramos a classe OlaMundoComponent, que conterá as funcionalidades deste componente. Para torná-la acessível em outras partes da aplicação devemos preceder a palavra class por export.
+
+Carregando o componente em um módulo
+Por fim, precisamos carregar este componente em um módulo, adotado pelo Angular para descrevemos como as diferentes partes da aplicação funcionam em conjunto.
+
+Abra o arquivo app.module.ts, localizado na pasta app
+
+Nele é declarada a classe AppModule, que podemos ver abaixo:
+
+1.import { AppComponent } from './app.component';
+2.
+3.import { OlaMundoComponent } from './ola-mundo/ola-mundo.component';
+4.
+5.@NgModule({
+6. declarations: [
+7.   AppComponent,
+8.   OlaMundoComponent,
+9. ],
+10. imports: [
+11.   BrowserModule
+12. ],
+13. providers: [],
+14. bootstrap: [AppComponent]
+15.})
+16.export class AppModule { }
+
+Explicando o código
+Linha 3: import { OlaMundoComponent } from './ola-mundo/ola-mundo.component';
+
+Precisamos importar o componente OlaMundoComponent para utilizar na linha 8.
+
+Linha 8: OlaMundoComponent
+
+Declaramos o componente em um módulo adicionando-o dentro do array declarations. Assim tornamos este componente disponível na aplicação.
+
+Utilizando o componente
+Agora podemos modificar o conteúdo do arquivo app.component.html, passando a apresentar o componente OlaMundoComponent em lugar da página padrão gerada pela Angular CLI. Para isso abra esse arquivo e insira a tag do componente, conforme demonstrado abaixo:
+
+<ola-mundo></ola-mundo>
+Note que utilizamos o seletor <ola-mundo></ola-mundo>, de acordo com o valor definido na propriedade selector no arquivo ola-mundo.component.ts. Escrevemos isso dentro de app.component.html, pois é ele que será carregado no index.html, como mostra o código abaixo:
+
+1.<!doctype html>
+2.<html lang="en">
+3.    Restante do código...
+4.
+5.    <body>
+6.       <app-root></app-root>
+7.    </body>
+8.
+9.</html>
+Explicando o código
+Linha 6: <app-root></app-root>
+
+O index.html carrega o componente app nesta linha.
+
+Executando o código
+Agora podemos acessar no browser e ver o componente funcionando
