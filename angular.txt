@@ -282,3 +282,24 @@ O index.html carrega o componente app nesta linha.
 
 Executando o código
 Agora podemos acessar no browser e ver o componente funcionando
+
+Na última aula vimos que a aplicação foi iniciada com o comando ng serve e, com isso, conseguimos visualizar o componente App no navegador. Agora entenderemos o que aconteceu durante este processo.
+
+Agora que vimos como utilizar o comando ng serve para executar a aplicação, conheceremos melhor os detalhes por trás da execução deste comando.
+
+Perceba que até o momento escrevemos componentes utilizando TypeScript, embora em nenhum momento nos preocupamos com a tradução deste código em código JavaScript para o navegador. Isso só foi possível porque esta é a primeira tarefa a ser executada pelo comando ng serve. Após isso, ele disponibiliza estes arquivos em um servidor web nativo, acessado a partir da porta 4200. E por isso, quando acessamos o endereço http://localhost:4200, vemos a aplicação em funcionamento.
+
+Também faz parte desta infraestrutura um recurso chamado Live Reload, a partir do qual podemos editar um arquivo e vê-lo recarregado em sua última versão automaticamente no navegador, sem que para isso seja necessário recarregar a página.
+
+Lembre-se que ng é o comando para chamarmos a Angular CLI, portanto é o parâmetro serve quem inicia, de fato, o modo de teste da aplicação.
+
+Nota: Ao final do curso veremos que não utilizamos o ng serve para o ambiente de produção e sim o ng build, pois o ng serve consome muito recurso do servidor e devemos utilizá-lo apenas para testar a aplicação.
+
+Criando um componente com a Angular CLI
+
+Criar um componente manualmente é um processo repetitivo e que envolve cuidado com certos detalhes. Uma vez que uma aplicação pode conter inúmeros componentes podemos facilitar sua criação refazendo estes passos de forma automatizada com a Angular CLI.
+
+
+
+
+
