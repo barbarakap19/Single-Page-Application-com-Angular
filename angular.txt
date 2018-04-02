@@ -387,6 +387,163 @@ Podemos carregar arquivos de JavaScript na propriedade scripts informando o cami
 5."scripts": [],
 Esta função não será utilizada no curso, mas o Angular está pronto para receber código JavaScript de terceiros
 
+8. Conhecendo o Input e o ng-content
+
+Precisamos finalizar a criação do painel-simples, adicionando as classes do Bootstrap. Veremos como manipular o HTML com a sintaxe do Angular.
+
+Documentação
+Adicionaremos o código que representa um painel do Bootstrap:
+
+1. <div class="col-sm-6">
+2.   <div class="panel panel-info">
+3.       <div class="panel-heading">
+4.           <h3 class="panel-title">Painel Simples</h3>
+5.       </div>
+6.       <div class="panel-body">
+7.           <h3>Conteúdo do painel</h3>
+8.       </div>
+9.   </div>
+10.</div>
+Não detalharemos o código, mas caso tenha dificuldades aqui no portal DevMedia temos um curso específico para Bootstrap.
+
+Podemos atribuir valores ao componente configurando a sua classe, como mostra o código abaixo:
+
+1. export class PainelSimplesComponent implements OnInit {
+2. titulo = "Painel simples";
+3. col = 6;
+4. tipo = "info";
+5.
+6. constructor() { }
+7. ngOnInit() {}
+8. }
+Explicando o código
+Linha 2: titulo = "Painel simples";
+
+Adicionando o valor Painel simples no atributo titulo.
+
+Linha 3: col = 6;
+
+Adicionando o valor 6 no atributo col.
+
+Linha 4: tipo = "info";
+
+Adicionando o valor info no atributo tipo.
+
+Definimos atributos na classe PainelSimplesComponent e ao definir estes valores conseguimos acessá-los no HTML. Veremos isto a seguir.
+
+Utilizando os atributos de um componente no HTML
+E para exibir estes dados utilizamos a sintaxe do Angular, como mostra o código abaixo:
+
+1. <div class="col-sm-{{col}}">
+2.   <div class="panel panel-{{tipo}}">
+3.       <div class="panel-heading">
+4.           <h3 class="panel-title">{{titulo}}</h3>
+5.       </div>
+6.       <div class="panel-body">
+7.           <h3>Conteúdo do painel</h3>
+8.       </div>
+9.   </div>
+10. </div>
+Explicando o código
+Linha 1: <div class="col-sm-{{col}}">
+
+Linha 2: <div class="panel panel-{{tipo}}"> >
+
+Linha 4: <h3 class="panel-title">{{titulo}}</h3>
+
+Envolvendo o nome do atributo da classe com chaves duplas {{}} conseguimos acessá-lo no HTML.
+
+Adicionando Input ao componente
+Podemos tornar este componente configurável, pois não queremos exibir o mesmo título sempre. Para isso podemos anotar os atributos da classe com @Input, como mostra o código abaixo:
+
+1.import { Component, OnInit, Input } from '@angular/core';
+2.
+3.export class PainelSimplesComponent implements OnInit {
+4.    @Input() titulo;
+5.    @Input() col;
+6.    @Input() tipo = "info";
+7.
+8.    constructor() { }
+9.    ngOnInit() {}
+10.}
+Explicando o código
+Linha 1: import { Component, OnInit, Input } from '@angular/core';
+
+Importando Inputdo pacote @angular/core. Iremos utilizá-lo nas linhas 4, 5 e 6.
+
+Linha 4: @Input() titulo;
+
+Linha 5: @Input() col;
+
+Linha 6: @Input() tipo = "info";
+
+Recebemos dados através do decorator @Input(). Note que no tipo do painel foi atribuído o valor info, que é padrão, caso nenhum valor seja passado.
+
+Configurando o AppComponent
+E quem passará estas configurações vistas anteriormente? Será o componente AppComponent no arquivo app.component.html:
+
+1. <app-painel-simples titulo="Painel Simples" col="6"
+tipo="info"></app-painel-simples>
+Explicando o código
+Linha 1: <app-painel-simples titulo="Painel Simples" col="6" tipo="info"></app-painel-simples>
+
+Passamos a configuração para o componente através de atributos, informando qual o valor que cada um deve possuir. É bem similar ao uso de atributos nos elementos nativos do HTML.
+
+Definimos o valor inicial info para o atributo tipo na classe PainelSimplesComponent, então podemos omitir este parâmetro, como mostra o código abaixo:
+
+<app-painel-simples titulo="Painel Simples" col="6"></app-painel-simples>
+Adicionando o ng-content
+Queremos alterar o conteúdo do body deste painel, sem passar apenas uma string ou valores numéricos, mas sim passar tags do HTML, parecido com o código abaixo:
+
+1.<app-painel-simples titulo="Painel Simples" col="6">
+2.    <h3>Tag do HTML h3</h3>
+3.    <p>Tag do HTML p </p>
+4.</app-painel-simples>
+Contudo, apenas com o Input não é possível e, para isto, devemos utilizar o ng-content. Portanto, no HTML do painel simples devemos escrever o código abaixo:
+
+1. <div class="col-sm-{{col}}">
+2.    <div class="panel panel-{{tipo}}">
+3.       <div class="panel-heading">
+4.           <h3 class="panel-title">{{titulo}}</h3>
+5.       </div>
+6.       <div class="panel-body">
+7.           <ng-content></ng-content>
+8.       </div>
+9.   </div>
+10.</div>
+
+OBS.: erro de versoes do bootstrap
+
+soluções apresentadas
+
+1 - conversor online de Bootstrap 3 para Bootstrap 4: 
+http://upgrade-bootstrap.bootply.com/ 
+
+2 - Trocar o panel por card
+
+<div class="col-sm-6"> 
+<div class="card"> 
+<div class="card-header"> 
+<h3 class="card-title">Painel Simples</h3> 
+</div> 
+<div class="card-body"> 
+<h3>Conteúdo do painel</h3> 
+</div> 
+</div> 
+</div> 
+
+3 - Caso opti pela versão 4 instalar mais duas bibliotecas, a popper.js@^1.12.9 e a jquery@1.9.1 
+Para adicionar outras libs de terceiros, utilize o arquivo angular-cli.json que encontra-se na raiz do projeto. 
+
+linha 25: "scripts": [], 
+Nesta linha é possível informar quais arquivos de JavaScript devem ser iniciados com o Angular, então adicione aqui o caminho para o arquivo do JQuery, propper.js e bootstrap.min.js exatamente nesta ordem. 
+
+Obs: O bootstrap.min.js é baixado automaticamente com o bootstrap, os demais scripts, podem ser instalados com o npm.
+
+4 -  Desinstalar o bootstrap 4 "npm uninstall bootstrap" e instalar o 3 com "npm install bootstrap@3"
+
+
+
 
 
 
