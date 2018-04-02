@@ -542,6 +542,126 @@ Obs: O bootstrap.min.js é baixado automaticamente com o bootstrap, os demais scr
 
 4 -  Desinstalar o bootstrap 4 "npm uninstall bootstrap" e instalar o 3 com "npm install bootstrap@3"
 
+9. Módulos
+
+Veremos aqui um conceito fundamental na criação de componentes: por que declará-los em módulos? Com isso falaremos também sobre as motivações do Angular em adotar este mecanismo.
+
+Documentação
+Organizamos uma aplicação Angular separando os componentes em módulos. Isto nos permite utilizá-los apenas quando necessário, trazendo maior desempenho para aplicação, ou seja, o Angular só carrega o componente se o seu módulo for carregado.
+
+Observando de outro ponto de vista, os módulos são necessários para carregar um componente, ou seja, precisamos declarar um componente dentro de um módulo para torná-lo acessível no HTML.
+
+Nota: O próprio Angular se divide em módulos para também se organizar melhor. Por exemplo, no módulo de formulários encontramos classes que estão relacionadas à construção de um formulário, enquanto no módulo HTTP encontramos classes que nos ajudam a fazer uma requisição para um servidor que está no back-end.
+
+O AppModule só terá acesso ao componente B porque somente ele é exportado. Entretanto, o Componente B consegue utilizar o Provider B e o Componente C porque os três estão no mesmo módulo. É como se o módulo B fosse uma classee o Componente B um método público, mas o Componente Ce o Provider B são métodos privados.
+
+Explorando a estrutura de um módulo
+Podemos observar que o módulo é uma classe anotada com @NgModule e utilizamos este decorator para configurar a classe:
+
+@NgModule
+export class AppModule { }
+Note que para utilizar @NgModule precisamos importar NgModule do pacote @angular/core. Na importação não utilizamos o caractere “@” antes do nome:
+
+import { NgModule } from '@angular/core';
+Note que uma classe só se torna um módulo do Angular quando anotamos com o @NgModule.
+
+Entendendo a estrutura de um módulo
+Observe agora as propriedades definidas pelo decorator @NgModule:
+
+01.@NgModule({
+02.    declarations: [
+03.        AppComponent,
+04.        PainelSimplesComponent,
+05.    ],
+06.    imports: [
+07.        BrowserModule
+08.    ],
+09.    providers: [],
+10.    bootstrap: [AppComponent],
+11.    exports:[]
+12.})
+13.export class AppModule { }
+Explicando o código
+Linha 2: declarations: [
+
+Sabemos que precisamos declarar um componente dentro do array declarations. Isso porque um componente precisa ser inicializado, pois só conseguimos acessá-lo no HTML se declararmos em um módulo. Este, por sua vez, precisa ser inicializado, mas no nosso caso, uma vez que AppModule é o módulo principal da aplicação, não precisamos carregá-lo, já que isso é feito automaticamente.
+
+Linha 6: imports: [
+
+Lembra que mencionamos que um módulo pode ser utilizado em outros projetos? É através do imports que utilizamos módulos de outros projetos. Quando isso ocorre, herdamos todos os componentes exportados para o mesmo. Quando importamos um módulo em AppModule estamos inicializando-o e, com isso, todos os componentes exportados ficam acessíveis na aplicação.
+
+Linha 11: exports:[]
+
+Esta propriedade exports serve para exportar os componentes definidos no array declarations, ou seja, não conseguimos importar um módulo e acessar os seus componentes se eles não forem exportados. Precisamos exportá-los para torná-los públicos.
+
+Uma vez que AppModule é um módulo com características especiais, nele não é necessário utilizar exports, pois será carregado automaticamente e seus componentes já estarão acessíveis.
+
+Benefício de utilizar módulos
+O maior benefício de se utilizar módulos é que podemos carregar apenas o módulo necessário para uma certa ação a ser realizada pelo programa. Por exemplo, até agora não importamos o módulo HTTP, pois ele não foi necessário e isto tornará a nossa aplicação menor e mais ágil, já que nenhum código está sendo adicionado além daquele que é realmente necessário.
+
+10. Adicionando a Barra de Navegação
+
+Em muitos casos precisamos construir a aplicação sobre um template pronto, que já contém algum HTML/CSS, porém ainda sem funcionalidade. Vamos iniciar a criação da interface do Dashboard, partindo da sua barra de navegação. Com isso veremos como programar a partir de um template pronto.
+
+Documentação
+Assim como vimos na criação do “Olá Mundo”, criamos funcionalidade a partir de componentes. Sendo assim, o primeiro passo para criar a barra de navegação é criar um componente que a representa e fazemos isto com a Angular CLI:
+
+ng g c barra-navegacao --spec false
+
+O parâmetro --spec false foi adicionado para não gerar o arquivo de teste, como vimos na aula 4. Não precisamos deste arquivo neste curso, pois testes estão fora deste escopo inicial.
+
+Agora copiaremos o HTML responsável por exibir esta barra de navegação para o arquivo barra-navegacao.component.html:
+
+1.<nav class="navbar navbar-inverse">
+2.    <div class="container-fluid">
+3.        <div class="navbar-header">
+4.            <button type="button" class="navbar-toggle pull-left">
+5.                <span class="icon-bar"></span>
+6.                <span class="icon-bar"></span>
+7.                <span class="icon-bar"></span>
+8.            </button>
+9.            <a class="navbar-brand" href="#">Administrador</a>
+10.        </div>
+11.        <div class="collapse navbar-collapse">
+12.            <ul class="nav navbar-nav navbar-right">
+13.                <li><a href="#">Sair</a></li>
+14.            </ul>
+15.        </div>
+16.    </div>
+17.</nav>
+Adicionaremos agora o CSS deste componente, que fica no arquivo barra-navegacao.component.css:
+
+1. .navbar{
+2.   margin: 0;
+3.   border-radius: 0;
+4. }
+5. .navbar-toggle{
+6.   display: inline-block;
+7.   margin-left: 10px;
+8. }
+Entretanto, não basta criar o componente, pois precisamos chamá-lo no HTML. Sendo assim, no app.component.html escrevemos o seguinte código:
+
+1.<app-barra-navegacao></app-barra-navegacao>
+2.  <div class="main">
+3.      <div class="content">
+4.          <app-painel-simples
+5.          titulo="Consultas Marcadas Últimos 30 dias"
+6.          col="6">
+7.              <h3 class="text-center">120</h3>
+8.           </app-painel-simples>
+9.          </div>
+10.   </div>
+
+Explicando código
+
+Na linha 1 estamos utilizando o componente barra-navegacao. Note que as div’s main e content estão relacionadas à estrutura exigida pelo Bootstrap para que seu CSS funcione como o esperado. Entretanto, o Bootstrap é apenas um elemento de apoio nesta construção. O ponto mais importante que desejamos demonstrar aqui é como podemos construir um componente do Angular a partir de um template existente.
+
+
+
+
+
+
+
 
 
 
