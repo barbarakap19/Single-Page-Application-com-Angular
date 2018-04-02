@@ -299,7 +299,47 @@ Criando um componente com a Angular CLI
 
 Criar um componente manualmente é um processo repetitivo e que envolve cuidado com certos detalhes. Uma vez que uma aplicação pode conter inúmeros componentes podemos facilitar sua criação refazendo estes passos de forma automatizada com a Angular CLI.
 
+O primeiro passo é remover tudo que fizemos na aula anterior, ou seja, excluir o diretório ola-mundo, remover a declaração dentro do arquivo app.module.ts, além de remover o import do OlaMundoComponent.
 
 
+Criando um componente com a Angular CLI
+Para criar um componente com a Angular CLI utilizamos o comando:
+
+ng generate component nome-do-componente
+
+Ou a sua forma abreviada:
+
+ng g c nome-do-componente
+
+Daremos ao componente o nome de painel-simples utilizando o comando de criação:
+
+ng g c painel-simples
+
+Além disso, quando utilizamos a Angular CLI não precisamos declarar o componente dentro de AppModule, pois isto é feito automaticamente pela ferramenta.
+
+Note também que foi gerado um arquivo com o sufixo .spec.ts, que serve para escrevermos testes automatizados para o nosso componente.
+
+Inspecionando o arquivo painel-simples.component.ts
+Podemos observar que foi implementada uma interface em nosso componente, o OnInit. Veremos esta interface quando realizarmos uma requisição HTTP. O código gerado para o componente é apresentado abaixo:
+
+1.import { Component , Input, OnInit } from '@angular/core';
+2.
+3.@Component({
+4.selector: 'app-painel-simples',
+5.templateUrl: './painel-simples.component.html',
+6.styleUrls: ['./painel-simples.component.css']
+7.})
+8.export class PainelSimplesComponent implements OnInit {
+E se observarmos bem, o seletor do componente tem um prefixo app. Criamos prefixos para indicar qual o domínio de um componente, uma vez que podemos ter dois componentes de mesmo nome sendo utilizados em contextos diferentes.
+
+Nota: o prefixo app é padrão do Angular, mas podemos alterá-lo no arquivo .angular-cli.json, alterando a propriedade prefix.
+
+Podemos ter conflitos entre nomes, por exemplo quando importamos um componente de outro projeto. Por isso costumamos usar o nome do projeto como prefixo para assim conseguirmos saber qual componente pertence a qual projeto. Embora esta nomenclatura seja opcional, é importante segui-la.
+
+Iniciando o componente
+Para iniciar o componente precisamos chamá-lo em app.component.html, pois já sabemos que é neste arquivo que declaramos o conteúdo a ser apresentado na página inicial:
+
+<app-painel-simples></app-painel-simples>
+Ao executar novamente a aplicação no navegador note que temos agora o texto padrão gerado pela Angular CLI painel-simples works!. Veremos como modificar este conteúdo ao longo do curso.
 
 

@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 
 
 import { AppComponent } from './app.component';
+import { PainelSimplesComponent } from './painel-simples/painel-simples.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PainelSimplesComponent
     
   ],
   imports: [
