@@ -656,6 +656,72 @@ Explicando código
 
 Na linha 1 estamos utilizando o componente barra-navegacao. Note que as div’s main e content estão relacionadas à estrutura exigida pelo Bootstrap para que seu CSS funcione como o esperado. Entretanto, o Bootstrap é apenas um elemento de apoio nesta construção. O ponto mais importante que desejamos demonstrar aqui é como podemos construir um componente do Angular a partir de um template existente.
 
+11. Adicionando o Menu Lateral
+
+Para finalizar a estrutura HTML básica da aplicação, adicionaremos nela o menu lateral
+
+Neste ponto já podemos perceber que cada trecho de HTML em uma aplicação, ao qual atribuímos certo comportamento, deve estar contido em um componente. Sendo assim, o primeiro passo na construção do menu lateral é criar um componente. Faremos isso com o seguinte comando:
+
+ng g c menu-lateral --spec false
+Adicionaremos o HTML no arquivo menu-lateral.component.html para representar o template do componente:
+
+1.<div class="menu menu-open">
+2. <ul>
+3.   <li class="visible-xs"><a href="#">Sair</a></li>
+4. </ul>
+5.</div>
+Adicionaremos o CSS no arquivo menu-lateral.component.css para dar o estilo ao componente:
+
+1. .menu {
+2.   width: 0px;
+3.   height: 100%;
+4.   border-top: 1px solid #333;
+5.   background-color: #222;
+6.   flex-shrink: 0;
+7.   overflow: hidden;
+8.   transition: width .5s;
+9.}
+10.
+11. .menu.menu-open {
+12.    width: 300px;
+13.}
+14.
+15. .menu ul {
+16.   list-style: none;
+17.   padding: 10px 0px;
+18.}
+19.
+20. .menu ul li.active {
+21.   background-color: #080808;
+22.}
+23.
+24. .menu ul li a {
+25.   display: block;
+26.   color: #9d9d9d;
+27.   padding: 10px 15px;
+28.   white-space: nowrap;
+29.}
+30.
+31. .menu ul li:hover a,
+32. .menu ul li.active a {
+33.   color: white
+34.}
+
+Adicionando no arquivo app.component.html
+Lembrando que precisamos iniciar o componente menu-lateral em app.component.html, como mostra o código abaixo:
+
+1. <app-barra-navegacao></app-barra-navegacao>
+2. <div class="main">
+3.   <app-menu-lateral></app-menu-lateral>
+4.   <div class="content">
+5.       <app-painel-simples titulo="Consultas Marcadas 
+Últimos 30 dias" col="6">
+6.           <h3 class="text-center">120</h3>
+7.       </app-painel-simples>
+8.   </div>
+9.</div>
+Explicando código
+Linha 4 <app-menu-lateral></app-menu-lateral>. Chamando o componente menu-lateral
 
 
 
