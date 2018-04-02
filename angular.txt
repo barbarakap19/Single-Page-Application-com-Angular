@@ -342,4 +342,52 @@ Para iniciar o componente precisamos chamá-lo em app.component.html, pois já sab
 <app-painel-simples></app-painel-simples>
 Ao executar novamente a aplicação no navegador note que temos agora o texto padrão gerado pela Angular CLI painel-simples works!. Veremos como modificar este conteúdo ao longo do curso.
 
+Adicionando o Bootstrap
+
+Veremos nesta aula como instalar no projeto o Bootstrap para, a partir dele, determinarmos como será a apresentação do componente painel-simples.
+
+Documentação
+Há mais de uma forma de instalar o Bootstrap em um projeto Angular. Uma delas é baixando os arquivos do projeto e realizar a importação dos mesmos no index.html, como em qualquer site ou aplicação web. Entretanto, veremos como o Angular carrega arquivos de estilo.
+
+Podemos instalar o Bootstrap através do comando:
+
+npm i bootstrap
+
+Após baixá-lo, o mesmo estará disponível no diretório node_modules do projeto.
+
+Adicionando o Bootstrap ao projeto
+No diretório raiz do projeto temos o arquivo .angular-cli.json, onde podemos definir configurações da Angular CLI. Para adicionar o Bootstrap colocamos o seu caminho dentro de styles, como mostra o código abaixo:
+
+1."styles": [
+2. "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+3. "styles.css"
+4.],
+
+Note que neste arquivo já é feita a importação do CSS padrão da aplicação, declarado em styles.css.
+
+Explicando o código
+Linha 2: "../node_modules/bootstrap/dist/css/bootstrap.min.css"
+
+Adicionamos o arquivo de estilo no array styles.
+
+Reiniciando o servidor
+Precisamos reiniciar o servidor porque editamos as configurações da Angular CLI, então pare o ng serve e inicie novamente.
+
+Para certificar que o Bootstrap foi carregado, podemos verificar o arquivo styles.bundle.js no console do navegador através da aba network
+
+O Angular empacotou todos os arquivos de estilo em um único arquivo utilizando o Webpack. Você pode dar uma olhada no projeto do Webpack , mas não precisamos nos preocupar com isso, pois o Angular abstraiu toda esta complexidade.
+
+Explorando um pouco mais o arquivo .angular-cli.json
+Podemos carregar arquivos de JavaScript na propriedade scripts informando o caminho do arquivo JavaScript, ou seja, da mesma forma como carregamos arquivos de estilo:
+
+1."styles": [
+2. "../node_modules/bootstrap/dist/css/bootstrap.min.css",
+3. "styles.css"
+4.],
+5."scripts": [],
+Esta função não será utilizada no curso, mas o Angular está pronto para receber código JavaScript de terceiros
+
+
+
+
 
