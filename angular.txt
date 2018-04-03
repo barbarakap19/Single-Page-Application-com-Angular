@@ -724,6 +724,176 @@ Explicando código
 Linha 4 <app-menu-lateral></app-menu-lateral>. Chamando o componente menu-lateral
 
 
+12. Criando a view Resumo
+
+Adicionaremos a primeira página da aplicação, que apresentará um resumo do faturamento e das consultas para o usuário. Com isso veremos como o Angular cria uma view e agrupa nela diversos componentes.
+
+
+Documentação
+Uma boa prática é tratar uma view como um componente, assim teremos um componente chamado Resumo, que será responsável por carregar todos os componentes contidosnesta view. Utilizaremos a Angular CLI para gerar este componente:
+
+ng g c resumo --spec false
+
+Agora, tudo que representa o resumo será declarado dentro deste componente, ou seja, o app.component.html não terá mais o painel, pois isto é responsabilidade da view resumo. A view, por sua vez, será carregada pelo AppComponent, um procedimento que já vimos ser feito com outros componentes anteriormente. Editamos o arquivo app.component.html para aplicar esta prática:
+
+1. <app-barra-navegacao></app-barra-navegacao>
+2. <div class="main">
+3.  
+4.   <app-menu-lateral></app-menu-lateral>
+5.   <div class="content">
+6.       <app-resumo></app-resumo>
+7.   </div>
+8.</div>
+Explicando código
+Linha 6: <app-resumo></app-resumo>. Chamando o componente resumo, que representará a view de resumo, no AppComponent.
+
+Codificando o componente resumo
+E agora, o trecho de código que estava dentro de app, mas que representava o conteúdo da view resumo, colocamos no arquivo resumo.component.html:
+
+1.<app-painel-simples titulo="Consultas Marcadas Últimos 30 dias" col="6">
+2.   <h3 class="text-center">120</h3>
+3.</app-painel-simples>
+Adicionando o código que estava em AppComponente para dentro do componente Resumo
+
+Nota: Perceba que só removemos o painel que representava o resumo da aplicação, a barra de navegação e outros componentes ficaram em AppComponent.
+
+Terminando de codificar o componente resumo
+Com isso temos a mesma apresentação de antes, porém agora o nosso código está mais organizado, pois temos uma view trazendo o resumo da aplicação.
+
+Precisamos adicionar mais código HTML para preencher o restante da view, pois o Resumo conterá diversos painéis, assim como vimos na aula de apresentação do projeto. Adicionaremos estes painéis com o código abaixo.
+
+1.<app-painel-simples titulo="Consultas Marcadas
+ Últimos 30 dias" col="6">
+2.   <h3 class="text-center">87</h3>
+3.</app-painel-simples>
+4.
+5.<app-painel-simples titulo="Consultas Marcadas 
+Próximos 30 dias" col="6">
+6.   <h3 class="text-center">79</h3>
+7.</app-painel-simples>
+8.
+9.<app-painel-simples col="6" titulo="Faturamento Anterior">
+10.   <div class="box-faturamento">
+11.       <div class="col-md-10">
+12.           <h1 class="text-left">R$100.000</h1>
+13.       </div>
+14.       <div class="alert col-md-2 sm alert-success">
+15.           <b>10%</b>
+16.       </div>
+17.   </div>
+18.</app-painel-simples>
+19.
+20.<app-painel-simples col="6" titulo="Faturamento Provisão">
+21.   <div class="box-faturamento">
+22.       <div class="col-md-10">
+23.           <h1 class="text-left">R$100.000</h1>
+24.       </div>
+25.       <div class="alert col-md-2 sm alert-danger">
+26.           <b>10%</b>
+27.       </div>
+28.   </div>
+29.</app-painel-simples>
+Precisamos também dar um estilo um pouco melhor para o componente Resumo. Para isso criamos o CSS abaixo. Ele será responsável por alinhar o conteúdo interno do painel.
+
+1. .box-faturamento {
+2.   padding: 30px;
+3. }
+4.
+5. .box-faturamento h1 {
+6.   margin: 0;
+7.}
+Copiando os dados da API
+Podemos ver que este componente não está preparado para receber os dados do servidor, pois os dados estão fixos no HTML. Neste momento precisamos nos conectar a API e processar os dados recebidos por ela, apresentando-os nos painéis.
+
+Antes disso, veremos como processar o json de resposta dessa API. Para isso copiamos os dados da API que representam a view de resumo, acessando a url:
+
+http://projeto.devmedia.com.br/php/api-dashboard/api/resumo
+
+E, então, adicionamos este json na classe:
+
+1. export class ResumoComponent implements OnInit {
+2.
+3. resumo = {
+4.   consultas : {
+5.     anteriores : {
+6.       total : 87,
+7.       detalhes : [
+8.           { especialidade : "Cardiologia", quantidade : 20 },
+9.           { especialidade : "Clínica Geral", quantidade : 30 },
+10.       ]
+11.     },
+12.     marcadas : {
+13.       total : 79,
+14.       detalhes : [
+15.           { especialidade : "Cardiologia", quantidade : 19 },
+16.           { especialidade : "Clínica Geral", quantidade : 28 },
+17.       ]
+18.     }
+19.   },
+20.   faturamento : {
+21.     anterior : {
+22.       valor : 100000,
+23.       comparativo : 19
+24.     },
+25.     previsao : {
+26.       valor : 90000,
+27.       comparativo : -10 
+28.     }
+29.   }
+30. };
+31.
+32. ...Restante do código
+33.}
+Explicando código
+Linha3 resumo = {. Criando o atributo resumo e atribuindo os dados que recebemos da API, logo abaixo, exibiremos estes dados no HTML
+
+Codificando o HTML do componente resumo
+Queremos exibir os dados da classe no HTML, fazemos isto utilizando a sintaxe do Angular:
+
+1. <app-painel-simples titulo="Consultas Marcadas Últimos 30 dias"
+ col="6">
+2.       <h3 class="text-center">
+{{resumo.consultas.consultas_30dias_anteiores}}</h3>
+3.   </app-painel-simples>
+4.  
+5.   <app-painel-simples titulo="Consultas Marcadas Próximos 30 dias"
+ col="6">
+6.       <h3 class="text-center">
+{{resumo.consultas.consultas_30dias_posteriores}}</h3>
+7.   </app-painel-simples>
+8.  
+9.   <app-painel-simples col="6" titulo="Faturamento Anterior">
+10.       <div class="box-faturamento">
+11.           <div class="col-md-10">
+12.               <h1 class="text-left">
+{{resumo.faturamento.anterior.valor}}</h1>
+13.           </div>
+14.           <div class="alert col-md-2 sm">
+15.               <b>{{resumo.faturamento.anterior.comparativo}}%</b>
+16.           </div>
+17.   </div>
+18.   </app-painel-simples>
+19.
+20.   <app-painel-simples col="6" titulo="Faturamento Previsão">
+21.       <div class="box-faturamento">
+22.           <div class="col-md-10">
+23.               <h1 class="text-left">
+{{resumo.faturamento.previsao.valor}}</h1>
+24.           </div>
+25.           <div class="alert col-md-2 sm">
+26.               <b>{{resumo.faturamento.previsao.comparativo}}%</b>
+27.           </div>
+28.       </div>
+29.   </app-painel-simples>
+
+Explicando código
+
+Linha 2 <h3 class="text-center">{{resumo.consultas.consultas_30dias_anteiores}}</h3>. 
+
+Nesta linha acessamos o objeto resumo e, partir dele, a propriedade consultas_30dias_anteiores do objeto consultas. Faremo este mesmo procedimento para exibir os demais dados contidos neste json.
+
+
+
 
 
 
