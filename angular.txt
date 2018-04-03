@@ -1107,7 +1107,78 @@ Adicionamos as consultas realizadas, precisamos adicionar as consultas marcadas,
 Links úteis
 Acesse a API Dashboard.
 
+16. Melhorando a view consulta
 
+Repetição de código não é bom. Identificando que temos o mesmo comportamento em mais de uma parte da aplicação, devemos abstrair essa funcionalidade em um componente e, então, utilizá-lo.
+
+Documentação
+O Componente consulta exibe duas tabelas contendo as consultas marcadas e as realizadas. Podemos notar que o HTML destas suas áreas é bem similar. Para evitar a repetição de código, precisamos criar um componente que encapsula esse código repetido.
+
+Daremos a esse componente o nome de consulta-por-especialidade, como visto abaixo no comando de criação de componentes.
+
+ng g c consulta/consulta-por-especialidade --spec false
+Nota: Por questão de organização criamos o componente dentro do diretório consulta, pois este componente possui a finalidade de trazer uma tabela de consultas, então nada melhor do que estar dentro do diretório consulta.
+
+Este componente terá os seguintes atributos consultas e titulo:
+1. export class ConsultaPorEspecialidadeComponent implements OnInit {
+2.
+3. @Input() consultas;
+4. @Input() titulo;
+5. 
+6. constructor() {}
+7. ngOnInit() {}
+8.
+9.}
+Veja que queremos construir um componente que contém a nossa tabela. Vimos que as únicas coisas que mudam entre uma tabela e outra é o título e o array de consultas. Vamos receber estes dados de fora, por isso adicionamos @Input().
+
+Agora colocaremos o seguinte código dentro de consulta-por-especialidade.component.html:
+
+1.<app-painel-simples tipo="primary" titulo="{{titulo}}" col="6">
+2. <table class="table table-hover">
+3.   <thead>
+4.       <tr>
+5.           <th>Especialidade</th>
+6.           <th>Quantidade</th>
+7.       </tr>
+8.   </thead>
+9.   <tbody>
+10.     <tr *ngFor="let consulta of consultas">
+11.       <td>{{consulta.especialidade}}</td>
+12.       <td>{{consulta.quantidade}}</td>
+13.     </tr>
+14.   </tbody>
+15. </table>
+16.</app-painel-simples>
+Explicando o código
+Linha 1 <app-painel-simples tipo="primary" titulo="{{titulo}}" col="6">: Exibindo o título que esta na classe ConsultaPorEspecialidade.
+
+Linha 10 <tr *ngFor="let consulta of consultas">: Iterando sobre o array consultas que esta na classe ConsultaPorEspecialidade.
+
+Linha 11 E 12 <td>{{consulta.especialidade}}</td> e <td>{{consulta.quantidade}}</td>: Exibindo a especialidadee a quantidade que está no array consultas.
+
+Editando o consulta.component.html
+Se estamos recebendo estes dados de fora, alguém precisa passá-los, não é mesmo? Quem contém estes dados é o ConsultaComponent, fazemos isto no arquivo “consulta.component.html”.
+
+Observando de outro ponto de vista, o ConsultaComponent utiliza o componente ConsultaPorEspecialidade para exibir a tabela, quem chama o componente é responsável por passar os dados necessários.
+
+1.<app-consulta-por-especialidade
+2.   titulo="Consultas Realizadas - Últimos 30 dias"
+3.   [consultas]="consultas.realizadas">
+4. </app-consulta-por-especialidade>
+5.
+6. <app-consulta-por-especialidade
+7.   titulo="Consultas Marcadas - Próximos 30 dias"
+8.   [consultas]="consultas.marcadas">
+9. </app-consulta-por-especialidade>
+
+Explicando o código
+Linha 2 e 7 : titulo="Consultas Realizadas- Últimos 30 dias" e titulo="Consultas Marcadas - Próximos 30 dias". Definimos o titulo da tabela de consultas Realizadas e Marcadas, respectivamente.
+
+Linha 3:[consultas]="consultas.realizadas">. Passando o array realizadas para o componente ConsultaPorEspecialidade, pois ele espera que receber uma lista de consultas para iterar.
+
+Linha 4: [consultas]="consultas.marcadas">. Passamos um array de consultas para o componente ConsultaPorEspecialidade, porém agora estamos informando o array marcadas.
+
+Note que ficou muito mais simples a visualização do código, pois agora consulta-por-especialidade encapsula a lógica de criação de uma tabela.
 
 
 
