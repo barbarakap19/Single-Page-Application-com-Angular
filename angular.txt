@@ -1180,6 +1180,162 @@ Linha 4: [consultas]="consultas.marcadas">. Passamos um array de consultas para 
 
 Note que ficou muito mais simples a visualização do código, pois agora consulta-por-especialidade encapsula a lógica de criação de uma tabela.
 
+17. Criando Rotas
+
+Como navegar entre a view consulta e a view resumo? O Angular trabalha com rotas, permitindo a navegação entre páginas sem a necessidade de carregar a página por completo.
+
+Documentação
+Para navegar entre as views utilizaremos o sistema de rotas do Angular. Para implementá-lo, no arquivo app.module.ts adicionaremos um array definindo as rotas:
+
+1.let routes = [
+2. { path : "resumo", component: ResumoComponent},
+3. { path : "consulta", component: ConsultaComponent}
+4.]
+Explicando o código
+Linha1: let routes = [... Criando um array que conterá as rotas, teremos mais que uma rota na aplicação, por isso um array de rotas.
+
+Linha 2: { path : "resumo", component: ResumoComponent}, Linha 3: { path : "consulta", component: ConsultaComponent}. Rota para a aplicação, sendo path qual o nome da rota e component passamos qual componente queremos acessar, ou seja, quando acessar localhost:4200/resumo, deverá exibir o componente resumo.
+
+Apenas definir este array routes não será suficiente para o Angular entender as rotas, precisamos carregá-las. Para isto utilizamos o módulo de rotas do Angular:
+
+1.import { RouterModule } from '@angular/router';
+2.
+3.@NgModule({
+4. declarations: [
+5.   AppComponent,
+6.   PainelSimplesComponent,
+7.   BarraNavegacaoComponent,
+8.   MenuLateralComponent,
+9.   ResumoComponent,
+10.   ConsultaComponent,
+11.   ConsultaPorEspecialidadeComponent,
+12. ],
+13. imports: [
+14.   BrowserModule,
+15.   RouterModule.forRoot(routes)
+16. ],
+17. providers: [],
+18. bootstrap: [AppComponent]
+19.})
+20.export class AppModule { }
+Explicando o código
+Linha 1 import { RouterModule } from '@angular/router';: Importando o módulo de rotas do Angular
+
+Linha 15 RouterModule.forRoot(routes): Carregando as rotas definidas no array routes.
+
+Estamos importando o módulo de rotas com as rotas carregadas, agora o nosso módulo principal AppModule, tem conhecimentos destas rotas.
+
+Onde os componentes serão exibidos?
+Agora precisamos indicar onde carregamos os componentes, quando acessarmos /resumo deve carregar a view Resumo, mas aonde? No mesmo local em que carregamos o componente Resumo e Consulta. A diferença é que utilizamos o componente de rotas para alternar dinamicamente entre os componentes Resumo e Consulta. Para isso editamos o arquivo app.component.html:
+
+1.<app-barra-navegacao></app-barra-navegacao>
+2.<div class="main">
+3.   <app-menu-lateral></app-menu-lateral>
+4.   <div class="content">
+5.       <router-outlet></router-outlet>
+6.   </div>
+7.</div>
+Explicando o código
+Linha 5 <router-outlet></router-outlet>: Indicando onde será exibido o componente correspondente a rota acessada.
+
+Adicionando os links
+Temos que adicionar os links para que o usuário acesse as nossas rotas, fazemos isto no componente menu lateral dentro do arquivo menu-lateral.component.html.
+
+1.<div class="menu menu-open">
+2. <ul>
+3.   <li class="visible-xs"><a href="#">Sair</a></li>
+4.   <li><a routerLink="/resumo">Resumo</a></li>
+5.   <li><a routerLink="/consulta">Consulta</a></li>
+6. </ul>
+7.</div>
+Explicando o código
+Linha 4: <li><a routerLink="/resumo">Resumo</a></li> e linha 5: <li><a routerLink="/consulta">Consulta</a></li>. Note que utilizamos routerLink, pois ele irá carregar apenas um trecho específico com o componente, diferente do atributo href que carrega a aplicação inteira.
+
+repare que quando carregamos o módulo de rotas, o Angular passa a interpretar o atributo routerLink que nos permite navegar entre as rotas da aplicação, este atributo não existe no mundo HTML.
+
+Criando uma rota padrão
+Podemos adicionar uma rota padrão que irá redirecionar para a página inicial, fazemos isto alterando o array de rotas.
+
+1.let routes = [
+2. { path : "resumo", component: ResumoComponent},
+3. { path : "consulta", component: ConsultaComponent},
+4. { path : "faturamento", component: FaturamentoComponent},
+5. { path : "**" , redirectTo:"/resumo"}
+6.]
+Explicando o código
+Linha 5 { path : "**" , redirectTo:"/resumo"}: Qualquer rota diferente de resumo, consulta ou faturamento redicionará o cliente para /resumo.
+
+Nota: A rota padrão deve ser a última a ser informada e nunca a primeira, caso contrário ela será sempre acionada.
+
+Nota: Se não adicionarmos uma rota padrão, a pagina inicial será carregada em branco, pois não temos uma rota para “/”
+Organizando as rotas
+Uma boa prática é criar um módulo apenas para conter as nossas rotas, precisamos gerar este módulo com o seguinte comando:
+
+ng g m app-routing-module --flat
+Nota: Utilizamos a opção --flat para não criar um diretório para este módulo, ele ficará na raiz como o AppModule.
+
+Dentro do arquivo app-routing-module.ts adicionaremos o seguinte código:
+
+1.import { NgModule } from '@angular/core';
+2.import { RouterModule } from '@angular/router';
+3.import { ResumoComponent } from './resumo/resumo.component';
+4.import { ConsultaComponent } from './consulta/consulta.component';
+5.import { FaturamentoComponent } from
+ './faturamento/faturamento.component';
+6.
+7.let routes = [
+8. { path : "resumo", component: ResumoComponent},
+9. { path : "consulta", component: ConsultaComponent},
+10. { path : "faturamento", component: FaturamentoComponent},
+11. { path : "**" , redirectTo:"/resumo"}
+12.]
+13.
+14.@NgModule({
+15. imports: [RouterModule.forRoot(routes)],
+16. exports: [RouterModule]
+17.})
+18.export class AppRoutingModule { }
+Explicando o código
+Linha 2: import { RouterModule } from '@angular/router'; Importando o módulo de rotas.
+
+Linha 3: import { ResumoComponent } from './resumo/resumo.component';, Linha 4: import { ConsultaComponent } from './consulta/consulta.component'; e Linha 5: import { FaturamentoComponent } from './faturamento/faturamento.component'; Estamos importando os componentes que serão utilizados nas rotas.
+
+Linha 15: imports: [RouterModule.forRoot(routes)],Carregando as rotas e importando no módulo.
+
+Linha 16: exports: [RouterModule] Podemos observar que temos a propriedade exports, pois precisamos exportar as rotas configuradas.
+
+Importando as rotas em AppModule
+Precisamos importar o AppRoutingModule em AppModule, assim a nossa aplicação carregará as rotas configuradas por AppRoutingModule. Lembrando que AppModule é o módulo principal da aplicação.
+
+Adicionamos o seguinte código no arquivo app.module.ts:
+
+1.import { AppRoutingModule} from './app-routing.module';
+2.
+3.@NgModule({
+4. declarations: [
+5.   AppComponent,
+6.   PainelSimplesComponent,
+7.   BarraNavegacaoComponent,
+8.   MenuLateralComponent,
+9.   ResumoComponent,
+10.   ConsultaComponent,
+11.   ConsultaPorEspecialidadeComponent
+12. ],
+13. imports: [
+14.   BrowserModule,
+15.   AppRoutingModule
+16. ],
+17. providers: [],
+18. bootstrap: [AppComponent]
+19.})
+20.export class AppModule { }
+
+Explicando o código
+Linha 1: import { AppRoutingModule} from './app-routing.module'; Importando a classe AppRoutingModule do arquivo app-routing.module.ts. Este é o import que vimos nas aulas anteriores que é do JavaScript e TypeScript.
+
+Da linha 13 até linha 15: AppRoutingModule. Importando o módulo AppRoutingModule no módulo AppModule. Note que estamos nos referindo ao import do Angular que é diferente do import no JavaScript ou TypeScript.
+
+
 
 
 
