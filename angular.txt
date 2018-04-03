@@ -996,7 +996,116 @@ Links úteis
 Confira as possíveis siglas do pipe currency na ISO 4217
 
 
+15. Criando a view consulta e o NgFor
 
+Criaremos a view de consultas assim como vimos na apresentação do projeto. Posteriormente será necessário iterar numa lista e exibir cada item, para isto utilizaremos o NgFor.
+
+Documentação
+Criaremos o componente que será responsável pela view consulta com o comando abaixo:
+
+ng g c consulta --spec false
+
+Note que, neste momento, não é possível navegar entre o ResumoComponent e ConsultaComponent, então é preciso remover o resumo de app.component.html e adicionar componente consulta em seu lugar, até entender como navegar entre componentes.
+
+1. <app-barra-navegacao></app-barra-navegacao>
+2.<div class="main">
+3.   <app-menu-lateral></app-menu-lateral>
+4.   <div class="content">
+5.       <app-consulta></app-consulta>>
+6.   </div>
+7.</div>
+Agora copiamos os dados a view de consultas, acessando a URL:
+
+http://projeto.devmedia.com.br/php/api-dashboard/api/consulta.
+
+Adicionamos este JSON na classe consulta com o seguinte código:
+
+1.import { Component, OnInit } from '@angular/core';
+2.
+3.@Component({
+4. selector: 'app-consulta',
+5. templateUrl: './consulta.component.html',
+6. styleUrls: ['./consulta.component.css']
+7.})
+8.export class ConsultaComponent implements OnInit {
+9.
+10. consultas = {
+11.   "realizadas" : [
+12.       { "especialidade" : "Cardiologia", "quantidade" : 20 },
+13.       { "especialidade" : "Clínica Geral", "quantidade" : 30 },
+14.       { "especialidade" : "Dermatologia", "quantidade" : 14 }, 
+15.       { "especialidade" : "Gastroenterologia", "quantidade" : 10 },
+16.       { "especialidade" : "Pediatria", "quantidade" : 13 }
+17.   ],
+18.   "marcadas" : [
+19.       { "especialidade" : "Cardiologia", "quantidade" : 19 },
+20.       { "especialidade" : "Clínica Geral", "quantidade" : 28 },
+21.       { "especialidade" : "Dermatologia", "quantidade" : 13 },
+22.       { "especialidade" : "Gastroenterologia", "quantidade" : 8 },
+23.       { "especialidade" : "Pediatria", "quantidade" : 11 }
+24.   ]
+25. }
+26.
+27. constructor() { }
+28. ngOnInit() {}
+29.
+30.}
+Explicando o código
+Linha 10 consultas = {...: Criando o atributo consultas na classe ConsultaComponent e atribuindo o valor extraído da API.
+
+Linha 11:"realizadas" : [ Array que conterá todas as consultas realizadas da aplicação.
+
+Linha 18: "marcadas" : [ Array que conterá todas as consultas marcadas da aplicação.
+
+Adicionando o HTML
+Agora editamos o consulta.component.html, pois lá que adicionamos o HTML do componente.
+
+1.<app-painel-simples tipo="primary" titulo="Consultas Realizadas
+ - Últimos 30 dias" col="6">
+2. <table class="table table-hover">
+3.   <thead>
+4.       <tr>
+5.           <th>Especialidade</th>
+6.           <th>Quantidade</th>
+7.       </tr>
+8.   </thead>
+9.   <tbody>
+10.     <tr *ngFor="let consulta of consultas.realizadas">
+11.       <td>{{consulta.especialidade}}</td>
+12.       <td>{{consulta.quantidade}}</td>
+13.     </tr>
+14.   </tbody>
+15. </table>
+16.</app-painel-simples>
+Explicando o código
+Linha 10 <tr *ngFor="let consulta of consultas.realizadas">: Navegando no array com a diretiva NgFor. Para iterar nesta lista é necessário definir qual o array e neste caso é consultas.realizadas array que está na nossa classe ConsultaComponent. let consulta/b> estamos criando uma variável chamada “consulta” para cada índice do array. A palavra for faz parte da sintaxe, então precisamos seguir exatamente como foi escrito.
+
+Linha 11 e 12 <td>{{consulta.especialidade}}</td> e <td>{{consulta.quantidade}}</td>: Em cada iteração queremos acessar o atributo especialidade e quantidade, acessamos através da variável consulta que declaramos com let consulta na linha 10. Para cada iteração será criado um <tr> com seus respectivos <td>.
+
+Adicionando a tabela marcadas
+Adicionamos as consultas realizadas, precisamos adicionar as consultas marcadas, fazemos isto com o código abaixo:
+
+1.<app-painel-simples tipo="primary" titulo="Consultas Marcadas
+ - Próximos 30 dias" col="6">
+2. <table class="table table-hover">
+3.   <thead>
+4.       <tr>
+5.           <th>Especialidade</th>
+6.           <th>Quantidade</th>
+7.       </tr>
+8.   </thead>
+9.   <tbody>
+10.     <tr *ngFor="let consulta of consultas.marcadas">
+11.       <td>{{consulta.especialidade}}</td>
+12.       <td>{{consulta.quantidade}}</td>
+13.     </tr>
+14.   </tbody>
+15. </table>
+16.</app-painel-simples>
+É basicamente o mesmo código escrito anteriormente, só mudamos o título e o array.
+
+Links úteis
+Acesse a API Dashboard.
 
 
 
