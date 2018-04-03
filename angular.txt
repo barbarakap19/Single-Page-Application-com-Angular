@@ -892,6 +892,108 @@ Linha 2 <h3 class="text-center">{{resumo.consultas.consultas_30dias_anteiores}}<
 
 Nesta linha acessamos o objeto resumo e, partir dele, a propriedade consultas_30dias_anteiores do objeto consultas. Faremo este mesmo procedimento para exibir os demais dados contidos neste json.
 
+13. Manipulando classes do HTML
+
+É bem comum precisarmos manipular o atributo class do elemento HTML quando desenvolvemos web sites. No Angular, contamos com uma sintaxe especial para isso que, aplicada ao HTML, nos permite resolver este problema.
+
+Documentação
+Uma das formas de manipular uma classe CSS é através atributo class de cada elemento do HTML. Considere, por exemplo, o seguinte trecho de código:
+
+<h3 [class.text-center]=”true”>Um texto qualquer</h3>
+Com ele, conseguimos habilitar ou desabilitar a classe text-center, utilizando o valor trueou false. Com este código conseguimos gerar o seguinte HTML:
+
+<h3 class=”text-center”>Um texto qualquer</h3>
+Neste caso, o atributo class só está presente porque a expressão [class.text-center] recebeu o valor true.
+
+Podemosainda passar o valor de um atributo para esta expressão:
+
+<h3 [class.text-center]=”centraliza”></h3>
+Sendo centraliza um atributo definido na classe do componente que contém o valor true ou false, como mostra o código abaixo:
+
+@Component
+class MeuComponente {
+    centraliza = true;
+}
+NgClasse
+Há ainda uma outra forma de obtermos o mesmo resultado, utilizando a diretiva NgClass>. O código abaixo demonstra alguns casos de uso dessa diretiva:
+
+1. <p [ngClass]="'classe1 classe2'">...</p>
+2.
+3. <p [ngClass]="['classe1', 'classe2']">...</p>
+4.
+5.<p [ngClass]="{'classe1': true, 'classe2': false, 'classe3': true}"
+>...</p>
+6.
+7.<p [ngClass]="{'classe1 classe2 classe3' : true}">...</p>
+Explicando código
+Linha 1 <p [ngClass]="'classe1 classe2'">...</p>. Podemos passar as classes que queremos adicionar através de uma string e o resultado será: <p class=”classe1 classe2”>...</p>
+
+Linha 3 <p [ngClass]="['classe1', 'classe2']">...</p>. A diretiva ngClass também aceita um array de Strings, neste caso o resultado será: O resultado será: <p class=”classe1 classe2”>...</p>
+
+Linha 5 <p [ngClass]="{'classe1': true, 'classe2': false, 'classe3': true}">...</p>. Configuramos também através de um objeto e a propriedade que possuir o valor true será incluída como uma classe do elemento. O resultado será: <p class=”classe1 classe3”>...</p>
+
+Linha 7 <p [ngClass]="{'classe1 classe2 classe3' : true}">...</p>.Outra forma de configurar o ngClass através de um objeto, desta forma passamos a propriedade com todas as classes que queremos adicionar, O resultado será: <p class=”classe1 classe2 classe3”>...</p>
+
+Utilizando o NgClass com if ternário
+A melhor sintaxe para o nosso caso é o seguinte código:
+
+1. <div class="alert col-md-2 sm"
+2. [ngClass]="resumo.faturamento.anterior.comparativo
+ >= 0 ? 'alert-success' : 'alert-danger'">
+No código acima, utilizamos um if ternário para atribuir as classes alert-success ou alert-danger no elemento.
+
+Explicando código
+Linha2 [ngClass]="resumo.faturamento.anterior.comparativo >= 0 ? 'alert-success' : 'alert-danger' ">: Se o comparativo for maior ou igual a 0 queremos apresentar alert-success caso contrário alert-danger.Foi utilizado um if ternário tornando a escrita do código menor, é muito comum o uso de if ternário em diversas linguagens, não só no JavaScript.
+
+Finalizando o código
+Para finalizar, adicionamos as mesmas classes ao painél de previsão, como visto no código a seguir.
+
+<div class="alert col-md-2 sm" [ngClass]="resumo.faturamento.previsao
+    .comparativo >= 0 ? 'alert-success' : 'alert-danger' ">
+
+14. Pipes
+
+Constantemente estamos manipulando o DOM em aplicações web e é bem comum querer tratar um dado vindo do servidor, seja filtrando elementos de um array ou formatando para valores monetários. Veremos como fazer isto com pipes.
+
+Documentação
+É bem comum precisarmos formatar um valor monetário e este trabalho é bem simples quando utilizamos pipes. Fazemos isto como mostra o código abaixo:
+
+1. <h1 class="text-left">
+2. {{resumo.faturamento.previsao.valor | currency}}
+3. </h1>
+4.
+5. <h1 class="text-left">
+6. {{resumo.faturamento.previsao.valor | currency:'BRL'}}
+7. </h1>
+Explicando código
+Linha 2 {{resumo.faturamento.previsao.valor | currency}}:Observe que apenas utilizamos o caractere “|” que também é chamado de pipe e logo após chamamos o pipe do Angular currency, e automaticamente o valor será exibido como monetário.
+
+Linha 6 {{resumo.faturamento.previsao.valor | currency:'BRL'}}: Podemos ainda especificar qual moeda estamos trabalhando, em nosso caso real.
+
+Nota: Temos diversas siglas que podemos utilizar com os pipe currency, confira a lista das siglas abaixo na seção Links úteis, o mesmo também é sugerido pela documentação oficial do Angular.
+Pipe lowercase e uppercase
+Para visualizar um outro exemplo, utilizaremos uma tag do HTML chamada pre, então adicione o seguinte código ao final do arquivo app.component.html:
+
+1. <pre>
+2.   {{'UM TEXTO QUALQUER' | lowercase}}
+3.   {{'um texto qualquer' | uppercase}}
+4. </pre>
+Explicando código
+Linha 1 <pre>: Utilizando a tag pre do HTML para dar uma visualização melhor, isto não faz parte do Angular.
+
+Linha 2 {{'UM TEXTO QUALQUER' | lowercase}}: Converte o texto maiúsculo para minúsculo.
+
+Linha 3 {{'um texto qualquer' | uppercase}} Converte o texto minúsculo para maiúsculo.
+
+JSON
+Um problema recorrente é formatar um dado JSON na view, para que possamos observar como é montado a sua estrutura, para isto utilizamos o pipe json:
+
+<pre>{{ resumo | json }}</pre>
+
+Nota: Importante observar que o Bootstrap adicionou um estilo para a tag pre, por isso temos bordas e este fundo cinza.
+
+Links úteis
+Confira as possíveis siglas do pipe currency na ISO 4217
 
 
 

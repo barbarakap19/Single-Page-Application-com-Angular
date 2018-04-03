@@ -11,8 +11,8 @@
     <div class="col-md-10">
       <h1 class="text-left">{{resumo.faturamento.anterior.valor}}</h1>
     </div>
-    <div class="alert col-md-2 sm alert-danger">
-      <b>{{resumo.faturamento.anterior.comparativo}}</b>
+    <div class="alert col-md-2 sm" [ngClass]="resumo.faturamento.anterior.comparativo >= 0 ? 'alert-success' : 'alert-danger' ">
+      <b>{{resumo.faturamento.anterior.comparativo}}%</b>
     </div>
   </div>
    
@@ -23,8 +23,8 @@
       <div class="col-md-10">
         <h1 class="text-left">{{resumo.faturamento.previsao.valor}}</h1>
       </div>
-      <div class="alert col-md-2 sm alert-success">
-        <b>{{resumo.faturamento.previsao.valor}}</b>
+      <div class="alert col-md-2 sm" [ngClass]="resumo.faturamento.previsao.comparativo >= 0 ? 'alert-success' : 'alert-danger' " >
+        <b>{{resumo.faturamento.previsao.comparativo}}%</b>
       </div>
     </div>
      
