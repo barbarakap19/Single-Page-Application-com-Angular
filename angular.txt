@@ -1440,6 +1440,138 @@ http://projeto.devmedia.com.br/php/api-dashboard/api/resumo
     }
 }
 
+9. Criando services
+
+A nossa aplicação possui um comportamento comum a ser executado em diferentes componentes, a saber, trazer os dados da API. Quando encontramos esta necessidade podemos supri-la criando um serviço.
+
+Documentação
+O service terá a responsabilidade de conhecer a lógica que busca os dados da API, assim removemos esta responsabilidade do componente Resumo, tornando a sua leitura mais simples. Além disso, conseguimos isolar o código de infraestrutura necessário para a comunicação com a API em uma classe específica. Para criar um service digitamos o seguinte comando:
+
+ng g service resumo/resumo --spec false
+ou
+
+ng g s resumo/resumo --spec false
+
+Note que estamos criando o serviço resumo dentro do diretórioresumo.
+
+Precisamos tornar este serviço injetável pelo angular, mas por que? Assim delegamos ao Angular a tarefa de instanciar a classe que o implementa, bem como passá-lo ao componente que o utilizará. Fazemos isto em AppModule
+
+1. import { ResumoService } from './resumo/resumo.service';
+2.
+3.@NgModule({
+4. declarations: [
+5.//componentes
+6. ],
+7. imports: [
+8.   BrowserModule,
+9.   AppRoutingModule,
+10.   HttpClientModule
+11. ],
+12. providers: [ResumoService],
+13. bootstrap: [AppComponent]
+14.})
+15.export class AppModule { }
+Explicando o código
+Linha 1:import { ResumoService } from './resumo/resumo.service';. Importando o ResumoService.
+
+Linha 12: providers: [ResumoService], Tornando a classe injetável pelo Angular, assim no arquivo resumo.component.ts conseguimos injetar em nosso construtor, assim como fizemos com o HttpClient.
+
+Injetando o Resumo Service
+Fazemos a injeção da dependência assim como fizemos com o HttpClient, recebendo o ResumoService no construtor:
+
+1. import { ResumoService } from './resumo.service';
+2.
+3.export class ResumoComponent implements OnInit {
+4.
+5. resumo;
+6.
+7. constructor(private resumoService:ResumoService) {}
+8.}
+Explicando o código
+Linha 1: import { ResumoService } from './resumo.service'; Importando o ResumoService.
+
+Linha 7: constructor(private resumoService:ResumoService) {}.Injetando o ResumoService no construtor.
+
+Codificando o ResumoService
+Antes de utilizar o resumo service, precisamos escrever a lógica que traz os dados da API:
+
+1. import { Injectable } from '@angular/core';
+2. import { HttpClient } from '@angular/common/http';
+3.
+4.@Injectable()
+5.export class ResumoService {
+6.
+7. constructor(private http:HttpClient) { }
+8.
+9. getResumo(){
+10.   return this.http.get
+("http://projeto.devmedia.com.br/php/api-dashboard/api/resumo");
+11. }
+12.
+13.}
+Explicando o código
+Linha 2: import { HttpClient } from '@angular/common/http';. Importamos o HttpClient, e não o HttpClientModule. Existe outro pacote chamado @angular/http, que foi depreciado. Isto significa que a equipe do Angular não recomenda a utilização.
+
+Linha 4: @Injectable(). Tornando a classe injetável pelo Angular conseguimos utilizá-la assim como o HttpClient, que é injetado no construtor.
+
+Linha 9 e 10: Criando o método getResumo que retorna o observable.
+
+Utilizando o ResumoService
+1.export class ResumoComponent implements OnInit {
+2.
+3. resumo;
+4. constructor(private resumoService:ResumoService) {}
+5.
+6. ngOnInit() {
+7.   this.resumoService.getResumo()
+8.   .subscribe( dados => this.resumo = dados);
+9. }
+10.}
+Explicando o código
+Linha 7: this.resumoService.getResumo(). Acessando o método getResumo que retorna um observable.
+
+Linha 8: .subscribe( dados => this.resumo = dados);. Utilizando o método subscribe para se inscrever no observable, para isto passamos a função de callback como parâmetro e ela será executada no sucesso da requisição.
+
+Nota: Neste momento temos o ResumoComponent apenas com a responsabilidade de exibir os dados, pois quem conhece como é feita uma requisição é o ResumoService.
+
+Nota: Uma coisa importante a se mencionar é que a requisição só acontece quando chamamos a função subscribe.
+Adicionando variável de ambiente
+Note que, se o nosso servidor mudar o endereço, teremos que alterar a URL da aplicação em todos os nosso serviços. Este problema não é tão visível agora, pois temos um único serviço, o ResumoService.
+
+Porém, para garantir uma melhor qualidade ao código, podemos resolver este problema utilizando o objeto environment. Nele podemos definir valores para compartilhar entre as classes da aplicação. Para isso, dentro do diretório src/enviroments, precisamos editar o arquivo environment.ts.
+
+1. export const environment = {
+2. production: false,
+3. apiUrl:"http://projeto.devmedia.com.br/php/api-dashboard/api/"
+4.};
+Explicando o código
+Linha 1: export const environment = {. Exportando uma variável constante chamada environment.
+
+Linha 3: Adicionando a propriedade apiUrl para armazenar a URL da API, agora conseguimos compartilhar este valor entre todas as nossas classes e se precisarmos mudar seu valor, alteramos apenas em um único lugar!
+
+Nota: Veremoso arquivo environment.prod.ts ao final do curso.
+Utilizando o environment
+Para acessar o environment no resumo.service.ts, escrevemos o seguinte código:
+
+1. import { environment } from '../../environments/environment';
+2.
+3.@Injectable()
+4.export class ResumoService {
+5.
+6. constructor(private http:HttpClient) { }
+7.
+8. getResumo(){
+9.   return this.http.get(environment.apiUrl + "/resumo");
+10. }
+11.
+12.}
+Ao final do curso veremos a utilização do arquivo environment.prod.ts
+
+Explicando o código
+linha 1: import { environment } from '../../environments/environment'; Importando a constante environment.
+
+linha 9: return this.http.get(environment.apiUrl + "/resumo");. Utilizando a propriedade apiUrl definida no environment, note que apenas concatenamos as strings, conseguimos acessar o environment em qualquer classe.
+
 
 
 
