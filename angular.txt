@@ -1335,7 +1335,89 @@ Linha 1: import { AppRoutingModule} from './app-routing.module'; Importando a cl
 
 Da linha 13 até linha 15: AppRoutingModule. Importando o módulo AppRoutingModule no módulo AppModule. Note que estamos nos referindo ao import do Angular que é diferente do import no JavaScript ou TypeScript.
 
+18. HTTP e Variável de Ambiente
 
+Veremos como fazer as requisições com o HTTP do Angular, pois até agora só deixamos os dados fixos na classe.
+
+Documentação
+Até o momento, copiamos os dados da API e adicionamos na classe, tornando os dados fixos. Isto foi feito para evoluirmos o código gradativamente e nos possibilitou testar a aplicação antes de consultar o servidor. Agora, enviaremos uma requisição para esta API e receberemos os dados dinamicamente.
+
+Um recurso muito utilizado no Front-End é o AJAX, que nos permite fazer requisições HTTP para trazer dados do servidor, sem que para isso seja necessário atualizar a página. Para isto utilizaremos o HttpClient do Angular. Para fazermos isto, importamos o seu módulo no arquivo app.module.ts:
+
+1. import { HttpClientModule } from '@angular/common/http';
+2.
+3.@NgModule({
+4. declarations: [
+5.   //componentes...
+6. ],
+7. imports: [
+8.   BrowserModule,
+9.   AppRoutingModule,
+10.   HttpClientModule //Carregando o módulo de HTTP
+11. ],
+12. providers: [],
+13. bootstrap: [AppComponent]
+14.})
+15.export class AppModule {}
+Explicando o código
+Linha 1: import { HttpClientModule } from '@angular/common/http';Importando HttpClientModule do pacote @angular/common/http
+
+Linha 10: HttpCientModule //Carregando o módulo de HTTP Importando o módulo HttpClientModule no módulo AppModule, ou seja, tornando disponível HttpClient em nossa aplicação.
+
+Utilizando o HttpClient
+Agora, utilizaremos o HttpClient para trazer os dados da view Resumo, para isto editamos o arquivo resumo.component.ts.
+
+1. import { HttpClient } from '@angular/common/http';
+2.
+3. export class ResumoComponent implements OnInit {
+4. resumo;
+5.
+6. constructor(private http:HttpClient) {}
+7.}
+Explicando o código
+Linha 1 import { HttpClient } from '@angular/common/http';. Importando o HttpClient, Anteriormente importamos o HttpClientModule e neste arquivo estamos importando o HttpClient, portanto devemos nos atentar ao import correto.
+
+Linha 4 resumo;: Removido os dados fixos do resumo, pois buscaremos estes dados do servidor.
+
+Linha 6 constructor(private http:HttpClient) {}: O angular injetará o httpClient no nosso construtor, sem a necessidade de fazer um new HttpClient().
+
+Fazendo requisições
+Neste momento podemos utilizar o http como o atributo da classe e para fazer uma requisição, escrevemos o seguinte código:
+
+1. export class ResumoComponent implements OnInit {
+2. resumo;
+3.
+4. ngOnInit() {
+5. this.http.get
+("http://projeto.devmedia.com.br/php/api-dashboard/api/resumo")
+6. .subscribe( dados => this.resumo = dados );
+8. }
+Explicando o código
+Linha 5: this.http.get("http://projeto.devmedia.com.br/php/api-dashboard/api/resumo"). O métodothis.http.get retorna um observable, nele conseguimos se inscrever através do método subscribe, na linha 6, mas como isto funciona? Para a gente entender melhor, pense que um observable é um canal de notícias, então eu me inscrevo neste canal e quando tiver uma resposta eu recebo a notícia. Em nosso caso, estamos nos inscrevendo na requisição e quando ela obter sucesso, receberemos estes dados.
+
+Linha 6: .subscribe( dados => this.resumo = dados ); Passamos uma função de callback que será executada quando a requisição obter sucesso, esta função recebe os dados que chegaram da requisição e atribui a this.resumo.
+
+Note que escrevemos a lógica dentro de ngOnInit, pois queremos executar a requisição após construir o componente, e tudo que colocarmos dentro de ngOnInit será executado após o componente inicializar, tornando sua inicialização mais rápida!
+
+NgIf
+Tudo parece funcionar normalmente, entretanto o componente Resumo tenta acessar os dados antes que a requisição seja concluída. Isso acontece no arquivo resumo.component.html.
+
+<h3 class="text-center">{{resumo.consultas.consultas_30dias_anteiores}}
+</h3>
+
+Só que resumo está nulo neste momento e isto gera um erro no JavaScript. Para corrigir esse comportamento, contamos com o ngIf. A partir dele só acessamos o resumo se o mesmo estiver preenchido.
+
+<div *ngIf="resumo">
+2.<app-painel-simples titulo="Consultas Marcadas Últimos 30 dias" col="6">
+3.       <h3 class="text-center">
+{{resumo.consultas.consultas_30dias_anteiores}}</h3>
+4.   </app-painel-simples>
+5.
+6.  <!-- restante do código... -->
+7.
+8.</div>
+Explicando o código
+Linha 1: <div *ngIf="resumo">. Agora o Angular só irá exibir o que está dentro da div se o atributo resumo estiver preenchido pela requisição.
 
 
 
