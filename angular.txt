@@ -1572,6 +1572,61 @@ linha 1: import { environment } from '../../environments/environment'; Importand
 
 linha 9: return this.http.get(environment.apiUrl + "/resumo");. Utilizando a propriedade apiUrl definida no environment, note que apenas concatenamos as strings, conseguimos acessar o environment em qualquer classe.
 
+20. OnDestroy
+
+Falaremos sobre o método OnDestroy e com ela entenderemos um pouco mais sobre os observables, uma forma de comunicar as alterações em um dados para componentes interessados nesta informação. Conheceremos algumas boas práticas que podemos adotar quando utilizamos observables.
+
+Documentação
+Quando nos inscrevemos em um observable geramos uma inscrição, como uma assinatura. Para dar início a este processo, precisamos guardar a inscrição em nossa classe, fazemos isto com o seguinte código:
+
+1. export class ResumoComponent implements OnInit {
+2.
+3. resumo;
+4. inscricao;
+5.
+6. constructor(private resumoService:ResumoService) {}
+7.
+8. ngOnInit() {
+9.   this.inscricao = this.resumoService.getResumo()
+10.   .subscribe( dados => this.resumo = dados);
+11. }
+12.
+13. ngOnDestroy(){
+14.   this.inscricao.unsubscribe();
+15. }
+16.}
+Explicando o código
+Linha 4: inscricao;. Atributo que armazena a inscrição gerada pelo método subscribe.
+
+Linha 9: this.inscricao = this.resumoService.getResumo(). Armazenando a inscrição no atributo inscricao, esta inscrição é gerada quando chamamos o método subscribe.
+
+Linha 13: ngOnDestroy(){. O componente possui um método chamado ngOnDestroy, o que escrevermos dentro desta função, será executado quando o componente for destruído.
+
+Linha 14: this.inscricao.unsubscribe(); O método unsubscribe é chamado no exato momento que o componente for destruído, permitindo cancelar uma requisição se o componente deixar de existir na view.
+
+Interface OnDestroy
+É uma boa prática cancelar a inscrição quando o componente deixar de existir, ou seja, quando o ResumoComponent não estiver mais presente na view precisamos nos cancelar a inscrição.
+
+Para isso, podemos adicionar a interface OnDestroy em nosso componente, assim fica obrigatório declarar esta função.
+
+1.import { Component, OnInit, OnDestroy } from '@angular/core';
+2.
+3.export class ResumoComponent implements OnInit, OnDestroy {
+4. //código da classe...
+5.
+6.}
+Explicando o código
+Linha 1: import { Component, OnInit, OnDestroy } from '@angular/core';. Importando a interface OnDestroy.
+
+Linha 3: export class ResumoComponent implements OnInit, OnDestroy {. Implementando a interface OnDestroy.
+
+Conhecendo o HttpClient
+O HttpClient por padrão, já cancela a inscrição quando a requisição é concluída para liberar recursos utilizados pela inscrição. Entretanto se cancelar a inscrição no método ngOnDestroy permite cancelarmos a requisição, ou seja, se o usuário trocar de tela antes que a requisição seja concluída, ela será cancelada.
+
+Podemos realizar este teste deixando a conexão slow 3g e navegando entre Resumo e Consulta antes da requisição ser concluída
+
+
+
 
 
 
