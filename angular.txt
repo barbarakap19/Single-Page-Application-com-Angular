@@ -1419,6 +1419,27 @@ Só que resumo está nulo neste momento e isto gera um erro no JavaScript. Para co
 Explicando o código
 Linha 1: <div *ngIf="resumo">. Agora o Angular só irá exibir o que está dentro da div se o atributo resumo estiver preenchido pela requisição.
 
+Obs.: erro no html (variavel escrita errado)
+
+http://projeto.devmedia.com.br/php/api-dashboard/api/resumo
+
+{
+    "consultas" : {
+	    "consultas_30dias_anteiores" : 87,
+	    "consultas_30dias_posteriores" : 79
+    },
+    "faturamento" : {
+    	"anterior" : {
+	    	"valor" : 100000,
+	    	"comparativo" : 19
+	    },
+	    "previsao" : {
+	    	"valor" : 90000,
+	    	"comparativo" : -10	
+	    }
+    }
+}
+
 
 
 

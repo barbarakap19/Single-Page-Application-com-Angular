@@ -8,13 +8,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ResumoComponent implements OnInit {
 
-  resumo; 
+  resumo;
 
   constructor(private http:HttpClient) {
     
    }
-
-   
 
   ngOnInit() {
     this.http.get("http://projeto.devmedia.com.br/php/api-dashboard/api/resumo")
