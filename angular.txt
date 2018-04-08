@@ -1989,7 +1989,168 @@ Feito isso, precisamos adicionar os links para o nosso usuário conseguir acessar
 </div>
 Agora sim, temos a view faturamento
 
+Capturando eventos e o Output
 
+Em uma aplicação web estamos constantemente capturando eventos gerados pelo DOM. Nesta vídeo veremos a sintaxe que o Angular oferece para facilitar o tratamento de eventos e, posteriormente, aprenderemos como criá-los.
 
+Documentação
+Precisamos abrir e fechar o menu lateral, mas o botão para isso está em um componente diferente, na barra de navegação. Para resolver esse problema, primeiro aprenderemos como capturar o evento de click e, posteriormente, veremos como criar o nosso próprio evento.
+
+Antes de escrever o código definitivo, vamos entender o nosso cenário. Para isso, escreveremos um código que apresentará como tratar eventos no Angular. Crie a seguinte função que fecha o menu lateral no arquivo menu-lateral.component.ts.
+
+1.export class MenuLateralComponent implements OnInit {
+2.
+3. menuAberto = true;
+4. constructor() { }
+5.
+6. ngOnInit() {}
+7.
+8. fechaMenu(){
+9.   this.menuAberto = false;
+10. }
+11.
+12.}
+Explicando o código
+Linha 3: menuAberto = true;. Atributo que indica se o menu está aberto ou fechado, ou seja, true ou false.
+
+Linha 8: fechaMenu(){. Declarando a função que fecha o menu-lateral.
+
+Linha 9: this.menuAberto = false;. Atribuindo o valor false para o atributo menuAberto, ou seja, fechando o menu-lateral
+
+Manipulando a classe que abre o menu lateral
+Precisamos associar menuAberto com a classe que abre o menu, mas qual classe que abre o menu lateral? É a classe menu-open.
+
+1.<div class="menu" [class.menu-open]="menuAberto">
+2. <ul>
+3.   <li class="visible-xs"><a href="#">Sair</a></li>
+4.   <li><a routerLink="/resumo">Resumo</a></li>
+5.   <!-- restante dos links... -->
+6. </ul>
+7.</div>
+Explicando o código
+Linha 1: <div class="menu" [class.menu-open]="menuAberto">. Quando o atributo menuAberto for true, adicionamos a classe menu-open e o menu será aberto e se for false, o menu será fechado.
+
+Capturando eventos
+O código abaixo adiciona o botão que chama a função fechaMenu().
+
+1.<div class="menu" [class.menu-open]="menuAberto">
+2. <button (click)="fechaMenu()">Toggle</button>
+3. <ul>
+4.   <li class="visible-xs"><a href="#">Sair</a></li>
+5.   <li><a routerLink="/resumo">Resumo</a></li>
+6.   <!-- restante dos links... -->
+7. </ul>
+8.</div>
+Explicando o código
+Linha 2: <button (click)="fechaMenu()">Toggle</button>. Associando o evento de click com a função fechaMenu(), então quando clicamos neste botão, o menu é fechado.
+
+Nota: Este processo foi apenas para entendermos como capturar o evento de click e chamar uma função do componente!
+
+Tornando um evento ouvível
+Para criar o nosso evento, adicionaremos o código abaixo no arquivo barra-navegacao.component.ts.
+
+1.import { Component, OnInit, Output } from '@angular/core';
+2.
+3.@Component({
+4. selector: 'app-barra-navegacao',
+5. templateUrl: './barra-navegacao.component.html',
+6. styleUrls: ['./barra-navegacao.component.css']
+7.})
+8.export class BarraNavegacaoComponent implements OnInit {
+9.
+10. @Output() onToggle;
+11.
+12. constructor() { }
+13. ngOnInit() {}
+14.}
+Explicando o código
+Linha 1: import { Component, OnInit, Output } from '@angular/core'; Importando o Output do pacote @angular/core.
+
+Linha 10: @Output() onToggle;. Tornamos um evento ouvível quando anotamos com @Output, mas isto não é suficiente, precisamos disparar um evento com o EventEmitter.
+
+Criando o nosso próprio evento
+1.import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+2.
+3.@Component({
+4. selector: 'app-barra-navegacao',
+5. templateUrl: './barra-navegacao.component.html',
+6. styleUrls: ['./barra-navegacao.component.css']
+7.})
+8.export class BarraNavegacaoComponent implements OnInit {
+9.
+10. @Output() onToggle = new EventEmitter();
+11.
+12. constructor() { }
+13. ngOnInit() {}
+14.
+15. disparaEvento(){
+16.   this.onToggle.emit();
+17. }
+18.
+19.}
+Explicando o código
+Linha 1: import { Component, OnInit, Output, EventEmitter } from '@angular/core';. Note que importamos EventEmitter do pacote @angular/core.
+
+Linha 10: @Output() onToggle = new EventEmitter();. Instanciando o EventEmitter.
+
+Linha 15: disparaEvento(){. Criando a função que irá disparar o evento, o seu nome é disparaEvento para ser mais intuitivo o que essa função faz.
+
+Linha 16: this.onToggle.emit();. Disparando o evento onToggle.
+
+Disparamos este evento com o botão da barra de navegação, fazemos isto editando o arquivo barra-navegacao.component.html:
+
+1.<nav class="navbar navbar-inverse">
+2. <div class="container-fluid">
+3.   <div class="navbar-header">
+4.     <button type="button" (click)="disparaEvento()"
+ class="navbar-toggle pull-left">
+5.      <span class="icon-bar"></span>
+6.      <span class="icon-bar"></span>
+7.      <span class="icon-bar"></span>
+8.     </button>
+9.    <a class="navbar-brand" href="#">Administrador</a>
+10. </div>
+11.<!-- Restante do código... 
+
+Explicando o código
+Linha 4: <button type="button" (click)="disparaEvento()" class="navbar-toggle pull-left">. Capturando o evento de click e chamando a função disparaEvento.
+
+Escutando o evento onToggle
+Agora conseguimos capturar o evento, adicionamos o código abaixo no arquivo app.component.html para fechar o menu lateral:
+
+1<app-barra-navegacao (onToggle)="menuLateral.toggle()">
+</app-barra-navegacao>
+2.<div class="main">
+3.   <app-menu-lateral #menuLateral></app-menu-lateral>
+4.   <div class="content">
+5.       <router-outlet></router-outlet>
+6.   </div>
+7.</div>
+Explicando o código
+Linha 1: <app-barra-navegacao (onToggle)="menuLateral.toggle()"></app-barra-navegacao>. Capturando o evento onToggle e chamando a função toggle que foi declarada dentro do menu-lateral.
+
+Linha 3: <app-menu-lateral #menuLateral></app-menu-lateral>. Declarando a variável menuLateral para fazer uma referência aos dados do componente menu-lateral.
+
+Criando a função toggle
+Queremos executar a função toggle quando ocorrer o evento onToggle, mas não criamos esta função, precisamos criá-la no arquivo menu-lateral.component.ts.
+
+1.export class MenuLateralComponent implements OnInit {
+2.
+3. menuAberto = false;
+4.
+5. constructor() { }
+6. ngOnInit() {}
+7.
+8. toggle(){
+9.   this.menuAberto = !this.menuAberto;
+10. }
+11.
+12.}
+E pronto!, conseguimos abrir e fechar o menu lateral!
+
+Explicando o código
+Linha 8: toggle(){. Esta função é uma melhoria da função fechaMenu(), pois não queremos apenas fechar o menu, queremos abrir e fechar
+
+Linha 9: this.menuAberto = !this.menuAberto;. Invertendo o valor do atributo menuAberto, se ele estiver aberto esta função fechará o menu e vice versa.
 
 
