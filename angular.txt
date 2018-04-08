@@ -2153,4 +2153,59 @@ Linha 8: toggle(){. Esta função é uma melhoria da função fechaMenu(), pois não q
 
 Linha 9: this.menuAberto = !this.menuAberto;. Invertendo o valor do atributo menuAberto, se ele estiver aberto esta função fechará o menu e vice versa.
 
+25. Empacotando a aplicação com o ng build
+
+Nossa aplicação está pronta. Veremos como gerar os arquivos para publicar em um servidor web com o comando ng build.
+
+Documentação
+Queremos publicar a aplicação para que outros usuários acessem e é através de um servidor web que conseguimos alcançar este objetivo. A Angular CLI nos auxilia gerando os arquivos necessários para publicarmos neste servidor web, fazemos isto digitando o comando abaixo na raiz do projeto:
+
+ng build
+ou
+
+npm run build
+Isto criará um diretório com todos os arquivos prontos para ser hospedado em um servidor web
+
+Podemos ver que foi gerado os arquivos de JavaScript e o nosso index.html, pois este comando faz a transpilação do código TypeScript para JavaScript para que o navegador consiga interpretar a aplicação.
+
+Entretanto foi gerado os arquivos de map, eles servem para associar o arquivo JavaScript ao TypeScript, assim o navegador consegue identificar em qual linha do TypeScript ocorreu o erro, pois ele só lê os arquivos JavaScript.
+
+Mas em um ambiente de produção real, não é necessário o uso desses arquivos. Podemos gerar os arquivos novamente utilizando o parâmetro --prod para remover estes arquivos desnecessários.
+
+ng build --prod
+Nota: Este parâmetro indica que a aplicação será gerada no modo de produção.
+
+Além disso, com este parâmetro os arquivos serão minificados, ou seja, serão removidos os espaços, comentários e outros caracteres desnecessários.
+
+Porém temos um problema, não definimos a variável de ambiente para o modo de produção, podemos fazer isso adicionando a propriedade apiUrl” no arquivo environment.prod.ts:
+
+1.export const environment = {
+2. production: true,
+3. apiUrl:"http://projeto.devmedia.com.br/php/api-dashboard/api/"
+4.};
+Mas por quê? Temos dois arquivos de variáveis de ambiente, um para desenvolvimento e outro para produção, isto evita falhas durante o desenvolvimento, pois podemos esquecer de trocar as configurações antes de publicar. Com dois arquivos diferentes evitamos este tipo de problema.
+
+Abrindo o arquivo main.bundle.js percebemos que o arquivo é ilegível, mas para o nosso navegador isto não faz diferença
+
+Podemos ver que foi gerado os arquivos de JavaScript e o nosso index.html, pois este comando faz a transpilação do código TypeScript para JavaScript para que o navegador consiga interpretar a aplicação.
+
+Entretanto foi gerado os arquivos de map, eles servem para associar o arquivo JavaScript ao TypeScript, assim o navegador consegue identificar em qual linha do TypeScript ocorreu o erro, pois ele só lê os arquivos JavaScript.
+
+Mas em um ambiente de produção real, não é necessário o uso desses arquivos. Podemos gerar os arquivos novamente utilizando o parâmetro --prod para remover estes arquivos desnecessários.
+
+ng build --prod
+Nota: Este parâmetro indica que a aplicação será gerada no modo de produção.
+
+Além disso, com este parâmetro os arquivos serão minificados, ou seja, serão removidos os espaços, comentários e outros caracteres desnecessários.
+
+Porém temos um problema, não definimos a variável de ambiente para o modo de produção, podemos fazer isso adicionando a propriedade apiUrl” no arquivo environment.prod.ts:
+
+1.export const environment = {
+2. production: true,
+3. apiUrl:"http://projeto.devmedia.com.br/php/api-dashboard/api/"
+4.};
+Mas por quê? Temos dois arquivos de variáveis de ambiente, um para desenvolvimento e outro para produção, isto evita falhas durante o desenvolvimento, pois podemos esquecer de trocar as configurações antes de publicar. Com dois arquivos diferentes evitamos este tipo de problema.
+
+Abrindo o arquivo main.bundle.js percebemos que o arquivo é ilegível, mas para o nosso navegador isto não faz diferença
+
 

@@ -8,7 +8,7 @@ export class ResumoService {
   constructor(private http:HttpClient) { }
 
   getResumo(){
-  return this.http.get(environment.apiUrl + "resumo")
+  return this.http.get(environment.apiUrl + "/resumo")
   
   
 }
