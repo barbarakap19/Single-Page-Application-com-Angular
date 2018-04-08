@@ -1851,6 +1851,145 @@ Podemos testar desabilitando a internet no chrome
 
 network - offline
 
+23. Criando a view Faturamento
+
+Agora podemos criar a view faturamento, como vimos na apresentação do projeto. Será basicamente uma revisão, na qual criaremos esta nova view, relembrando os passos dados anteriormente.
+
+Documentação
+Criaremos a view que representa o faturamento e, como sabemos, cada view é um componente, então vamos criá-lo:
+
+ng g c faturamento --spec false
+Criando o Service
+Precisamos fazer uma requisição pro servidor e trazer os dados do faturamento para isto criamos um serviço:
+
+ng g s faturamento/faturamento --spec false
+Adicionando o serviço em providers
+Feito isso, não podemos esquecer de adicionar o service em providers, no AppModule:
+
+1. import { FaturamentoService } from './faturamento/faturamento.service';
+2.
+3.@NgModule({
+4. declarations: [
+5.   //componentes ...
+6. ],
+7. imports: [
+8.   BrowserModule,
+9.   AppRoutingModule,
+10.   HttpClientModule
+11. ],
+12. providers: [ResumoService, ConsultaService, FaturamentoService],
+13. bootstrap: [AppComponent]
+14.})
+15.export class AppModule { }
+Codificando o service
+Precisamos configurar o nosso service:
+
+1.import { Injectable } from '@angular/core';
+2.import { HttpClient } from '@angular/common/http';
+3.import { environment } from '../../environments/environment';
+4.
+5.@Injectable()
+6.export class FaturamentoService {
+7.
+8. constructor(private http:HttpClient) { }
+9.
+10. getFaturamento(){
+11.   return this.http.get(environment.apiUrl + 'faturamento');
+12. }
+13.
+14.}
+Nota: Não podemos esquecer de adicionar o environment para acessar a URL da api.
+
+Agora acessaremos este service no FaturamentoComponent:
+
+<app-painel-simples
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FaturamentoService } from './faturamento.service';
+ 
+@Component({
+selector: 'app-faturamento',
+templateUrl: './faturamento.component.html',
+styleUrls: ['./faturamento.component.css']
+})
+export class FaturamentoComponent implements OnInit,OnDestroy {
+ 
+faturamento;
+faturamentoInscricao;
+ 
+constructor(private faturamentoService:FaturamentoService) { }
+ 
+ngOnInit() {
+this.faturamentoInscricao = this.faturamentoService.getFaturamento()
+.subscribe( dados => this.faturamento = dados, erro => console.log(erro))
+}
+ 
+ngOnDestroy(){
+this.faturamentoInscricao.unsubscribe();
+}
+ 
+}
+Nota: Não podemos esquecer de adicionar o ngOnDestroy para se desinscrever. Podemos tratar o erro de diversas formas, em nosso caso, vamos só dar um console.log, mas você pode adicionar qualquer tipo de tratamento, fica a teu critério.
+
+Agora que os dados são consultados da API podemos exibí-los no HTML, fazemos isto editando o arquivo faturamento.component.html.
+
+<app-painel-simples
+titulo="faturamento"
+col="12"
+tipo="primary">
+ 
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Valor</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let faturamento of faturamento?.detalhamento">
+        <td>{{faturamento.descricao}}</td>
+        <td>{{faturamento.valor}}</td>
+    </tr>
+    </tbody>
+</table>
+ 
+</app-painel-simples>
+Nota: Adicionamos o safe navigation operator (?), pois sabemos que faturamento não existe antes da requisição ser concluída, assim evitamos um erro no JavaScript.
+
+Adicionando as rotas
+Entretanto tudo isto não é o suficiente para exibir o faturamento, precisamos adicionar a rota para este componente, fazemos isto editando o arquivo app-routing.module.ts.
+
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { ResumoComponent } from './resumo/resumo.component';
+import { ConsultaComponent } from './consulta/consulta.component';
+import { FaturamentoComponent } from './faturamento/faturamento.component';
+ 
+let routes = [
+{ path : "resumo", component: ResumoComponent},
+{ path : "consulta", component: ConsultaComponent},
+{ path : "faturamento", component: FaturamentoComponent},
+{ path : "**" , redirectTo:"/resumo"}
+ 
+]
+ 
+@NgModule({
+imports: [RouterModule.forRoot(routes)],
+exports: [RouterModule]
+})
+export class AppRoutingModule { }
+Feito isso, precisamos adicionar os links para o nosso usuário conseguir acessar esta rota, e adicionamos este link no menu lateral no arquivo menu-lateral.component.html.
+
+<div class="menu menu-open">
+<ul>
+    <li class="visible-xs"><a href="#">Sair</a></li>
+    <li><a routerLink="/resumo">Resumo</a></li>
+    <li><a routerLink="/consulta">Consulta</a></li>
+    <li><a routerLink="/faturamento">Faturamento</a></li>
+</ul>
+</div>
+Agora sim, temos a view faturamento
+
+
 
 
 

@@ -14,6 +14,8 @@ import { ConsultaPorEspecialidadeComponent } from './consulta/consulta-por-espec
 import { AppRoutingModule } from './app-routing.module';
 import { ResumoService } from './resumo/resumo.service';
 import { ConsultaService } from './consulta/consulta.service';
+import { FaturamentoComponent } from './faturamento/faturamento.component';
+import { FaturamentoService } from './faturamento/faturamento.service';
 
 
 @NgModule({
@@ -24,7 +26,8 @@ import { ConsultaService } from './consulta/consulta.service';
     MenuLateralComponent,
     ResumoComponent,
     ConsultaComponent,
-    ConsultaPorEspecialidadeComponent
+    ConsultaPorEspecialidadeComponent,
+    FaturamentoComponent
     
   ],
   imports: [
@@ -33,7 +36,7 @@ import { ConsultaService } from './consulta/consulta.service';
     HttpClientModule
     
   ],
-  providers: [ResumoService, ConsultaService],
+  providers: [ResumoService, ConsultaService, FaturamentoService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
