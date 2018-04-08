@@ -1625,7 +1625,127 @@ O HttpClient por padrão, já cancela a inscrição quando a requisição é concluída 
 
 Podemos realizar este teste deixando a conexão slow 3g e navegando entre Resumo e Consulta antes da requisição ser concluída
 
+21. Trazendo os dados da view consulta e o Safe Navigation Operator
 
+Precisamos trazer os dados da API que representa a view consulta, assim como fizemos na view resumo. Veremos uma outra sintaxe do Angular que nos permite acessar um objeto nulo de forma segura, evitando causar um erro no JavaScript.
+
+Documentação
+Sabemos que é uma boa prática criar um service para trazer os dados da API. Para criá-lo digitamos o seguinte comando:
+
+ng g s consulta/consulta --spec false
+Não podemos esquecer de definir o service em providers no arquivo app.module.ts, para que o Angular passe a conhecer as classes que ele deve injetar.
+
+1.import { ConsultaService } from './consulta/consulta.service';
+2.
+3.@NgModule({
+4. declarations: [
+5.   //componentes ...
+6. ],
+7. imports: [
+8.   BrowserModule,
+9.   AppRoutingModule,
+10.   HttpClientModule
+11. ],
+12. providers: [ResumoService, ConsultaService],
+13. bootstrap: [AppComponent]
+14.})
+15.export class AppModule { }
+Explicando o código
+Linha 1: import { ConsultaService } from './consulta/consulta.service';. Importando o ConsultaService.
+
+Linha 12: providers: [ResumoService, ConsultaService], Tornando ConsultaService injetável pelo Angular.
+
+Codificando o ConsultaService
+Agora podemos escrever o nosso service:
+
+1. import { Injectable } from '@angular/core';
+2. import { HttpClient } from '@angular/common/http';
+3.import { environment } from '../../environments/environment';
+4.
+5.@Injectable()
+6.export class ConsultaService {
+7.
+8. constructor(private http:HttpClient) { }
+9.
+10. getConsultas(){
+11.   return this.http.get(environment.apiUrl + '/consulta');
+12. }
+13.
+14.}
+Explicando o código
+Linha 2: import { HttpClient } from '@angular/common/http';. Importando o HttpClient
+
+Linha 3: import { environment } from '../../environments/environment';. Importando o environment
+
+Linha 8: constructor(private http:HttpClient) { }. Adicionando o HttpClient no construtor para o Angular injetar esta dependência.
+
+Linha 10 a 12: getConsultas(){. Criando o método que retornará as consultas. Não podemos esquecer de utilizar a variável de ambiente que contém apiUrl.
+
+Utilizando o ConsultaService
+Em ConsultaComponent, podemos acessar o serviço da seguinte forma:
+
+1. import { Component, OnInit, OnDestroy } from '@angular/core';
+2.import { ConsultaService } from './consulta.service';
+3.
+4.@Component({
+5. selector: 'app-consulta',
+6. templateUrl: './consulta.component.html',
+7. styleUrls: ['./consulta.component.css']
+8.})
+9.export class ConsultaComponent implements OnInit, OnDestroy {
+10.
+11. consultas;
+12. consultaInscricao;
+13.
+14. constructor(private consultaService:ConsultaService) { }
+15.
+16. ngOnInit() {
+17.   this.consultaInscricao = this.consultaService.getConsultas()
+18.   .subscribe( dados => this.consultas = dados)
+19. }
+20.
+21. ngOnDestroy(){
+22.   this.consultaInscricao.unsubscribe();
+23. }
+24.
+25.}
+Explicando o código
+Linha 2: import { ConsultaService } from './consulta.service';.Importando o consulta service.
+
+Linha 17: this.consultaInscricao = this.consultaService.getConsultas(). Guardando a inscrição no atributo consultaInscricao
+
+Linha 18: .subscribe( dados => this.consultas = dados). Armazenando os dados da requisição no atributo consultas.
+
+Linha 22: this.consultaInscricao.unsubscribe();. Se desinscrevendo do observable quando o componente for destruído, lembrando de adicionar o ngOnDestroy para se desinscrever do observable para poupar recursos do navegador e da API.
+
+Safe Navigation operator
+Temos o mesmo problema que aconteceu com ResumoComponent, estamos tentando acessar realizadas do atributo consultas, mas consultas só estará disponível quando a requisição for concluída.
+
+<app-consulta-por-especialidade
+2.   titulo="Consultas Realizadas - Últimos 30 dias"
+3.   [consultas]="consultas.realizadas">
+4. </app-consulta-por-especialidade>
+Podemos adicionar o ngIf, entretanto temos uma solução mais fácil para este caso, o Safe Navigation Operator.
+
+1.<app-consulta-por-especialidade
+2.   titulo="Consultas Realizadas - Últimos 30 dias"
+3.   [consultas]="consultas?.realizadas">
+4. </app-consulta-por-especialidade>
+5.
+6. <app-consulta-por-especialidade
+7.   titulo="Consultas Marcadas - Próximos 30 dias"
+8.   [consultas]="consultas?.marcadas">
+9. </app-consulta-por-especialidade>
+Explicando o código
+Linha 3: [consultas]="consultas?.realizadas">
+
+linha 8: [consultas]="consultas?.marcadas">. Adicionamos o caracter “?”, assim o Angular só tenta acessar realizadas se consultas não estiver nulo ou undefined.
+
+O ngIf não exibe o conteúdo do elemento caso a expressão passada retorne false.
+
+Note ainda que safe navigation operator retorna nulo, caso o objeto verificado não esteja disponível. Então o componente consulta-por-especialidade receberá um objeto nulo.
+
+Nota: O componente consulta-por-especialidade espera uma lista para iterar, mas isto não deveria causar um erro? O ngFor está preparado para estes casos, ele simplesmente ignora e não exibe a lista, até porque não temos uma lista.
 
 
 
