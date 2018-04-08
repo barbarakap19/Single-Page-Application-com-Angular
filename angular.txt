@@ -1747,7 +1747,109 @@ Note ainda que safe navigation operator retorna nulo, caso o objeto verificado n
 
 Nota: O componente consulta-por-especialidade espera uma lista para iterar, mas isto não deveria causar um erro? O ngFor está preparado para estes casos, ele simplesmente ignora e não exibe a lista, até porque não temos uma lista.
 
+22. Tratando erros na requisição
 
+Caso um erro aconteça durante a navegação, precisamos informar que houve um erro.
+
+Documentação
+É comum erros ocorrerem quando estamos trabalhando na web, pois estamos suscetíveis a falhas de comunicação e o HttpClient nos permite tratar erros gerados pela requisição. Passaremos uma segunda função de callback para o subscribe, está função será executada apenas quando o erro ocorrer:
+
+1.export class ConsultaComponent implements OnInit, OnDestroy {
+2.
+3. consultas;
+4. consultaInscricao;
+5. erro;
+6.
+7. constructor(private consultaService:ConsultaService) { }
+8.
+9. ngOnInit() {
+10.   this.consultaInscricao = this.consultaService.getConsultas()
+11.   .subscribe( 
+12.       dados => this.consultas = dados,
+13.       erro => this.erro = true);
+14. }
+15.
+16. ngOnDestroy(){
+17.   this.consultaInscricao.unsubscribe();
+18. }
+19.
+20.}
+Linha 5: erro;. Atributo que armazenará se houve um erro ou não.
+
+Linha 13: erro => this.erro = true);. Função de callback que será executada quando ocorrer um erro, ela será responsável por armazenar um valor em this.erro. Este atributo (this.erro) conterá um valor booleano, ou seja, se este atributo conter o valor true é porque houve um erro na requisição. Passaremos este valor para outros componentes, assim eles serão notificados de que houve uma falha na comunicação.
+
+Codificando o componente consulta-por-especialidade para receber o erro
+Agora precisamos informar o consulta-por-especialidade que houve um erro, para que ele não mostre o seu conteúdo, ou seja, a tabela. Fazemos isto editando o arquivo consulta.component.html.
+
+1. <app-consulta-por-especialidade
+2.   titulo="Consultas Realizadas - Últimos 30 dias"
+3. [consultas]="consultas?.realizadas"
+4.   [erro]="erro">
+5. </app-consulta-por-especialidade>
+6.
+7. <app-consulta-por-especialidade
+8.   titulo="Consultas Marcadas - Próximos 30 dias"
+9.   [consultas]="consultas?.marcadas"
+10.   [erro]="erro">
+11. </app-consulta-por-especialidade>
+Explicando o código
+Linha 5: erro;. Atributo que armazenará um valor booleano, true ou false. Isto será necessário para informar que houve um erro na requisição para o componente consulta-por-especialidade.
+
+Linha 13: erro => this.erro = true); Função de callback que será executada quando ocorrer um erro. Ela será responsável por armazenar um valor em this.erro, que por sua vez conterá um valor booleano. Se este atributo contiver o valor true é porque houve um erro na requisição. Passaremos este valor para outros componentes, assim eles serão notificados de que houve uma falha na comunicação.
+
+Passamos o atributo erro para o componente consulta-por-especialidade, assim ele sabe se houve um erro ou não.
+
+Adicionando @Input no atributo erro
+Mas consulta-por-especialidade não está preparado para receber este erro, então editaremos o arquivo consulta-por-especialidade.component.ts para que ele receba esta informação do componente Consulta.
+
+1. export class ConsultaPorEspecialidadeComponent implements OnInit {
+2.
+3. @Input() consultas;
+4. @Input() titulo;
+5. @Input() erro;
+6.
+7. constructor() { }
+8. ngOnInit() {}
+9.
+10.}
+Explicando o código
+Linha 5: @Input() erro;. Recebendo o atributo erro de um componente externo.
+
+E finalmente o componente consulta-por-especialidade passa receber a informação de que houve um erro, faremos o tratamento editando o arquivo consulta-por-especialidade.component.html.
+
+1. <app-painel-simples tipo="primary"
+titulo="{{titulo}}" col="6">
+2. <table *ngIf="!erro; else mensagem"
+class="table table-hover">
+3.   <thead>
+4.       <tr>
+5.           <th>Especialidade</th>
+6.           <th>Quantidade</th>
+7.       </tr>
+8.   </thead>
+9.   <tbody>
+10.     <tr *ngFor="let consulta of consultas">
+11.       <td>{{consulta.especialidade}}</td>
+12.       <td>{{consulta.quantidade}}</td>
+13.     </tr>
+14.   </tbody>
+15. </table>
+16. <ng-template #mensagem>
+17.   <h3 class="text-center">Falha na comunicação
+ com o servidor</h3>
+18. </ng-template>
+19.</app-painel-simples>
+Explicando o código
+Linha 2: <table *ngIf="!erro; else mensagem" class="table table-hover">. Adicionamos o ngIf para exibir a tabela caso não tenha um erro, mas se houver, queremos exibir a mensagem. Na linha 16 criamos esta mensagem.
+
+Linha 16: <ng-template #mensagem>. O ng-template é apenas para criarmos um container que receberá a mensagem, então apelidamos o ng-template de mensagem e caso aconteça um erro, será exibido o “<h3>” definido na linha 17.
+
+Linha 17: <h3 class="text-center">Falha na comunicação com o servidor</h3>. Texto que será exibido caso ocorra um erro.
+
+Testando a aplicação
+Podemos testar desabilitando a internet no chrome
+
+network - offline
 
 
 
